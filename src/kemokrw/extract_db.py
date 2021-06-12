@@ -5,7 +5,7 @@ import yaml
 import pandas as pd
 
 
-CONFIG_FILE = "kemokrw/config_db.yaml"
+CONFIG_FILE = "kemokrw\config_db.yaml"
 
 
 class ExtractDB(Extract):
