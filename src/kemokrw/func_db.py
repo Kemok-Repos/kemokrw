@@ -2,7 +2,7 @@ from re import match
 import yaml
 
 
-CONFIG_FILE = "config_db.yaml"
+CONFIG_FILE = "kemokrw/config_db.yaml"
 
 
 def model_format_check(model):
