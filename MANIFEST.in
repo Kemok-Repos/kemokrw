@@ -1,2 +1,1 @@
-include *.yaml
-include *.txt
+global-include *.yaml
