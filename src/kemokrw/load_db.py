@@ -1,6 +1,6 @@
-from load import Load
+from kemokrw.load import Load
 from sqlalchemy import create_engine
-from func_db import get_db_metadata
+from kemokrw.func_db import get_db_metadata
 
 
 class LoadDB(Load):

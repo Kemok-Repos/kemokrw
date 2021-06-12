@@ -1,4 +1,4 @@
-from transfer import Transfer
+from kemokrw.transfer import Transfer
 
 
 class BasicTransfer(Transfer):

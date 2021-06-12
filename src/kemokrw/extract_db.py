@@ -1,6 +1,6 @@
-from extract import Extract
+from kemokrw.extract import Extract
 from sqlalchemy import create_engine
-from func_db import get_db_metadata, model_format_check
+from kemokrw.func_db import get_db_metadata, model_format_check
 import yaml
 import pandas as pd
 
