@@ -35,6 +35,5 @@ setuptools.setup(
         'PyYAML==5.4.1',
         'six==1.16.0',
         'SQLAlchemy==1.4.16'
-    ],
-    include_package_data=True
+    ]
 )

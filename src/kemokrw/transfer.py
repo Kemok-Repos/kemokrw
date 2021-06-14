@@ -2,13 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class Transfer(ABC):
-    """Verificar y ejecuta la transferencia de datos de un lugar a otro.
-
-    Atributos
-    ---------
-    src : Objeto de una subclase de la clase Extract
-    dst : Objeto de una subclase de la clase Load
-    """
+    """Verificar y ejecuta la transferencia de datos de un lugar a otro.    """
 
     @abstractmethod
     def verify(self):
