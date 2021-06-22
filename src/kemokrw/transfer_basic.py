@@ -2,7 +2,7 @@ from kemokrw.transfer import Transfer
 
 
 class BasicTransfer(Transfer):
-    """Clase BasicTransfer implementaciǫn de la clase Transfer.
+    """Clase BasicTransfer implementación de la clase Transfer.
     
     Cumple la función de verficar la compatibilidad de los objetos a transferir,
     verifica si ambos extremos son "iguales" y transfiere un los atos de una fuente a la otra.

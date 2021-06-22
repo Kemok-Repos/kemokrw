@@ -1,0 +1,28 @@
+{
+  "ncols":4,
+  "check_rows":1000,
+  "colums": {
+    "col1": {
+      "type":"numeric",
+      "subtype":"float64",
+      "check_sum":"3645645.6",
+      "check_nn":"45"
+    },
+    "col2": {
+      "type":"text",
+      "subtype":"varchar",
+      "check_hash":"f8421e9916e54383b900a05c462a47b7",
+      "check_nn":"675"
+    },
+    "col3": {
+      "type":"boolean",
+      "subtype":"boolean",
+      "check_true":"345",
+      "check_nn":"56"
+    },
+    "col4": {
+      "type":"timestamp",
+      "subtype":"date",
+      "check_nn":"234"
+    }
+  }

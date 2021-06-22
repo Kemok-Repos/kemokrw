@@ -1,0 +1,15 @@
+db: postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118/srtendero
+table: erp_gom_precio
+model: 
+    col1: 
+      name: idprecio
+      type: Integer
+    col2: 
+      name: idempresa
+      type: Integer
+    col3: 
+      name: nombre
+      type: String
+    col4: 
+      name: fechaingreso
+      type: DateTime
