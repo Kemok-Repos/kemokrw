@@ -1,0 +1,2 @@
+git+https://github.com/Kemok-Repos/kemokrw.git@develop
+PyYAML==5.4.1
