@@ -24,16 +24,9 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
     install_requires=[
-        'greenlet==1.1.0',
-        'numpy==1.20.3',
         'pandas==1.2.4',
         'psycopg2==2.8.6',
         'pymssql==2.2.1',
-        'pyodbc==4.0.30',
-        'python-dateutil==2.8.1',
-        'pytz==2021.1',
-        'PyYAML==5.4.1',
-        'six==1.16.0',
         'SQLAlchemy==1.4.16'
     ]
 )
