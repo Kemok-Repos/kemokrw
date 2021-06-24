@@ -65,6 +65,13 @@ class ExtractDB(Extract):
         model_format_check(self.model)
         self.get_metadata()
 
+
+    @classmethod
+    def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
+        """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
+        pass
+        
+    
     def get_metadata(self):
         """Método que actualiza la metadata de la tabla de extracción"""
         self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition)

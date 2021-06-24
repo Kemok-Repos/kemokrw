@@ -1,0 +1,15 @@
+db: mssql+pymssql://tiendasmass:pades@75.126.22.38:1533/DBH01
+table: Precio
+model: 
+    col1: 
+      name: IdPrecio
+      type: int
+    col2: 
+      name: IdEmpresa
+      type: int
+    col3: 
+      name: Nombre
+      type: varchar(100)
+    col4: 
+      name: FechaIngreso
+      type: datetime

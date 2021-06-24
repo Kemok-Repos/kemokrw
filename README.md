@@ -12,10 +12,6 @@ pip install git+https://github.com/Kemok-Repos/kemokrw.git
 
 Se provee un documento de requerimientos para levantar un virtualenv.
 
-## Para realizar el build
-
-https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives
-
 ## ¿Cómo usar?
 
 La librería esta diseñada para usarse instanciando 3 objetos:
@@ -27,6 +23,14 @@ La librería esta diseñada para usarse instanciando 3 objetos:
 La transferencia se lleva a cabo cuando el objeto de extracción y el objeto de carga tienen columnas compatibles en número y en tipo. 
 
 Cada objeto se debe instanciar siguiendo las instrucciones propias de la subclase.
+
+### Ejemplos
+
+Se brinda un ejemplo de transferencia de base de datos a base de datos básica. Seguir las siguientes instrucciones:
+
+1. Crear un virtualenv con los contenidos de la carpeta examples/db-to-db
+2. Ejecutar en linea de comando `pip install -r requirements.txt`
+3. Ejcutar el script `python main.py`
 
 ### ExtractDB
 
