@@ -24,9 +24,9 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
     install_requires=[
-        'pandas==1.2.4',
-        'psycopg2==2.8.6',
-        'pymssql==2.2.1',
-        'SQLAlchemy==1.4.16'
+        'pandas>=1.2.4',
+        'psycopg2-binary>=2.8.6',
+        'pymssql>=2.2.1',
+        'SQLAlchemy>=1.3.24'
     ]
 )
