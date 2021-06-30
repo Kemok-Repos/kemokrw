@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="kemokrw",
-    version="0.0.1",
+    version="0.0.3",
     author="Kevin Mazariegos",
     author_email="kevin@kemok.io",
     description="A small example package",
@@ -24,7 +24,7 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
     install_requires=[
-        'pandas>=1.2.4',
+        'pandas>=1.1.5',
         'psycopg2-binary>=2.8.6',
         'pymssql>=2.2.1',
         'SQLAlchemy>=1.3.24'
