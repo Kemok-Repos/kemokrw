@@ -1,0 +1,15 @@
+db: postgresql://postgres:maitreya1234@localhost:5433/srtendero
+table: erp_gom_precio
+model: 
+    col1: 
+      name: idprecio
+      type: Integer
+    col2:
+      name: idempresa
+      type: Integer
+    col3: 
+      name: nombre
+      type: String
+    col4: 
+      name: fechaingreso
+      type: DateTime

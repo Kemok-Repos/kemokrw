@@ -1,0 +1,16 @@
+db: postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118:5432/srtendero
+table: Precio
+model: 
+    col1: 
+      name: IdPrecio
+      type: int
+    col2: 
+      name: IdEmpresa
+      type: int
+    col3: 
+      name: Nombre
+      type: varchar(100)
+    col4: 
+      name: FechaIngreso
+      type: datetime
+

@@ -29,8 +29,17 @@ COLUMN_TYPES = {
 
 TABLE_QUERY = "SELECT {columns} FROM {table} {condition} {order};"
 
+TABLE_QUERY_MAX = "WITH particion AS  " \
+                  "(select {key} as valor " \
+                  "FROM {table} order by 1 offset {offset} limit {limit}) " \
+                  "select max(valor)" \
+                  "from particion;"
+
 TABLE_CHECK = {
   "check_rows": "SELECT COUNT(*) FROM {table} {condition};"
+}
+TABLE_CHECK_LIMIT = {
+  "check_rows": "SELECT COUNT(*) FROM {table} {condition} {limit};"
 }
 
 COLUMN_QUERY = {
@@ -56,7 +65,7 @@ COLUMN_CHECK = {
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     },
     "other": {
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition}"
     }
   },
   "mssql": {

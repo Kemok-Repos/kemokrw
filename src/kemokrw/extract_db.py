@@ -83,10 +83,31 @@ class ExtractDB(Extract):
         j = []
         for i in self.model:
             j.append("{0} AS {1}".format(self.model[i]["name"], i))
+
         columns = ", ".join(j)
 
         query = config.TABLE_QUERY.format(columns=columns, table=self.table,
                                           condition=self.condition, order=self.order)
+
         connection = self.db.connect()
         self.data = pd.read_sql(sql=query, con=connection)
         connection.close()
+
+
+    def get_dataId(self):
+        """Método que para extraer data"""
+
+        j = []
+        for i in self.model:
+            j.append("{0} AS {1}".format(self.model[i]["name"], i))
+            break
+
+        columns = ", ".join(j)
+
+        query = config.TABLE_QUERY.format(columns=columns, table=self.table,
+                                          condition=self.condition, order=self.order )
+
+        connection = self.db.connect()
+        self.data = pd.read_sql(sql=query, con=connection)
+        connection.close()
+

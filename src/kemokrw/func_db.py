@@ -36,6 +36,8 @@ def get_db_metadata(conn, dbms, model, table, condition):
         for j in config.COLUMN_TYPES:
             if col_type in config.COLUMN_TYPES[j]:
                 col["type"] = j
+                print(col["type"])
+                break
         if "type" not in col.keys():
             print("*WARNING*: {} no es un tipo identificado.".format(col["subtype"]))
             col["type"] = "other"
@@ -43,7 +45,9 @@ def get_db_metadata(conn, dbms, model, table, condition):
         for j in config.COLUMN_CHECK[dbms][col["type"]]:
             query = config.COLUMN_CHECK[dbms][col["type"]][j].format(column=model[i]["name"], table=table,
                                                                      condition=condition)
+            print(query)
             col[j] = execute_srquery(connection, query)
+            print(col[j])
 
         columns[i] = col
 

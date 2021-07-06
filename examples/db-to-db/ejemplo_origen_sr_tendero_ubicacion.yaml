@@ -1,0 +1,37 @@
+db: postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118:5432/srtendero
+table: erp_gom_ubicacion
+model:
+    col1:
+      name: idubicacion
+      type: int4
+    col2:
+      name: idbodega
+      type: int4
+    col3:
+      name: nombre
+      type: varchar(100)
+    col4:
+      name: peso
+      type: numeric(18,8)
+    col5:
+      name: volumen
+      type: numeric(18,8)
+    col6:
+      name: condicionfactura
+      type: bit(1)
+    col7:
+      name: usuarioingreso
+      type: varchar(25)
+    col8:
+      name: fechaingreso
+      type: timestamp
+    col9:
+      name: timestamp
+      type: timestamp
+    col10:
+      name: descripcion
+      type: varchar(255)
+    col11:
+      name: estado
+      type: bpchar(1)
+
