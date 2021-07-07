@@ -20,6 +20,7 @@ def Tranfer(Key, condition):
 
     longitud = tuplaKey.data.shape[0]
     n_partition = 20
+
     elementos = longitud // n_partition
     k = 0
 
@@ -38,8 +39,12 @@ def Tranfer(Key, condition):
         src = ExtractDB(src_config['db'], src_config['table'], src_config['model'], order="", condition=ExtractCondition)
         dst = LoadDB(dst_config['db'], dst_config['table'], dst_config['model'], order="", condition=ExtractCondition)
         src.get_data()
+
         trf = BasicTransfer(src, dst)
-        trf.transfer(2)
+        trf.transfer(4)
+        del trf
+        del src
+        del dst
 
 if __name__ == "__main__":
 
@@ -56,7 +61,7 @@ if __name__ == "__main__":
 
     # calulo de particiones pack compatibles com pandas
     query = config.TABLE_CHECK["check_rows"].format(table=src_config['table'], condition="")
-    db = DbClient(uuid.uuid1().hex, "postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118:5432/srtendero")
+    db = DbClient(uuid.uuid1().hex, "postgresql+psycopg2://postgres:maitreya1234@localhost:5433/srtendero")
     longitud = db.ejecutar(query)[0]
     condition = {}
     if longitud > 1500000:
@@ -80,7 +85,7 @@ if __name__ == "__main__":
             indice += 1
 
     if condition == {}:
-        Tranfer(key=key, condition="")
+        Tranfer(Key=key, condition="")
     else:
         for i in condition:
             registrolog(f, str(datetime.datetime.now()) + ' --- PARTICION PANDA {}--- \n'.format(i))

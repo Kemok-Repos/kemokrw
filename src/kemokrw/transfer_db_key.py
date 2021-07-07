@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 def registrolog(f,msg):
     f.write(msg)
 
-class DbKeyTransfer(Transfer):
+class DbKeyTransfer():
 
     def __init__(self, src_config, dst_config, key, max_transfer=0):
         self.max_tranfer = max_transfer
@@ -24,6 +24,7 @@ class DbKeyTransfer(Transfer):
         self.key = key
 
     def prepare(self):
+        # calculo de tabla
         f = open('registro_tiempo.log', 'w')
 
         # calulo de particiones pack compatibles com pandas
@@ -62,7 +63,7 @@ class DbKeyTransfer(Transfer):
                              order="order by 1", condition=condition)
         tuplaKey.get_dataId()
         longitud = tuplaKey.data.shape[0]
-        n_partition = 20
+        n_partition = 10
         elementos = longitud // n_partition
         k = 0
 
@@ -79,6 +80,12 @@ class DbKeyTransfer(Transfer):
             dst = LoadDB(self.dst_config['db'], self.dst_config['table'], self.dst_config['model'], order="",
                          condition=ExtractCondition)
             src.get_data()
+
+            dolar = ['montodescuento', 'montoiva', 'montosubtotal']
+            for i in dolar:
+                src.data[i] = src.data[i].str.replace('$', '')
+
+            print(src.data)
             trf = BasicTransfer(src, dst)
             trf.transfer(2)
 

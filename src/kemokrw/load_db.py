@@ -27,7 +27,7 @@ class LoadDB(Load):
         Almacena la data de un pandas.DataFrame Object en una base de datos.
     """
 
-    def __init__(self, db, table, model, condition="", order="", chunksize=1000):
+    def __init__(self, db, table, model, condition="", order="", chunksize=1000000):
         """Construye los atributos necesarios para almacenar la información.
 
         Parametros
@@ -87,6 +87,13 @@ class LoadDB(Load):
         for i in self.model:
             names.append(self.model[i]["name"])
         data.columns = names
+
+        dolar = ['montodescuento', 'montoiva', 'montosubtotal', 'montoexento']
+        for i in dolar:
+            data[i] = data[i].str.replace('$', '', regex=False)
+            #data[i] = data[i].replace('$', '', regex=True)
+
+        self.chunksize = len(data) + 1
         data.to_sql(name=self.table, con=connection, if_exists='append', index=False,
                     chunksize=self.chunksize)
         connection.close()

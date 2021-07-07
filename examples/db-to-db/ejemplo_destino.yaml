@@ -1,5 +1,5 @@
 db: postgresql+psycopg2://postgres:maitreya1234@localhost:5433/srtendero
-table: erp_gom_facturadetalle
+table: erp_gom_facturadetalle_new
 model:
     col1:
       name: idfacturadetalle

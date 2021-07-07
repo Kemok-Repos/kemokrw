@@ -2,7 +2,8 @@ COLUMN_TYPES = {
   "numeric": [
     "INT",
     "INTEGER",
-    "NUMERIC"
+    "NUMERIC",
+    "MONEY"
   ],
   "text": [
     "CHAR",
@@ -50,7 +51,7 @@ COLUMN_QUERY = {
 COLUMN_CHECK = {
   "postgresql": {
     "numeric": {
-      "check_sum": "SELECT ROUND(SUM(COALESCE({column},0)),0) FROM {table} {condition};",
+      "check_sum": "SELECT ROUND(SUM(COALESCE({column}::numeric,0)),0) FROM {table} {condition};",
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     },
     "text": {
