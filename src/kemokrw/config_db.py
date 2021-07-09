@@ -51,22 +51,22 @@ COLUMN_QUERY = {
 COLUMN_CHECK = {
   "postgresql": {
     "numeric": {
-      "check_sum": "SELECT ROUND(SUM(COALESCE({column}::numeric,0)),0) FROM {table} {condition};",
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_sum": "SELECT ROUND(SUM(COALESCE({column}::numeric,0)),0) FROM {table} {condition} {order};",
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "text": {
-      "check_hash": "SELECT md5(string_agg({column},'')) FROM {table} {condition};",
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_hash": "SELECT md5(string_agg({column},'' {order})) FROM {table} {condition};",
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "datetime": {
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "boolean": {
-      "check_true": "SELECT COUNT(NULLIF({column},False)) FROM {table} {condition};",
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_true": "SELECT COUNT(NULLIF({column},False)) FROM {table} {condition}{order};",
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "other": {
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition}"
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order}"
     }
   },
   "mssql": {
@@ -89,3 +89,7 @@ COLUMN_CHECK = {
     }
   }
 }
+DB_COLLATION = {
+  "postgresql": {"lc_monetary":"show lc_monetary"
+                }
+  }

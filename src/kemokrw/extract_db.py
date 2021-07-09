@@ -29,7 +29,7 @@ class ExtractDB(Extract):
         Obtiene la data de la tabla a extraer.
     """
 
-    def __init__(self, db, table, model, condition="", order=""):
+    def __init__(self, db, table, model, condition="", order="", key=""):
         """Construye los atributos necesarios para la lectura de la información.
 
         Parametros
@@ -60,6 +60,7 @@ class ExtractDB(Extract):
         self.order = order
         self.metadata = dict()
         self.data = None
+        self.key = key
 
         # Inicializa metadata
         model_format_check(self.model)
@@ -74,7 +75,7 @@ class ExtractDB(Extract):
     
     def get_metadata(self):
         """Método que actualiza la metadata de la tabla de extracción"""
-        self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition)
+        self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition, self.key)
 
 
     def get_data(self):
@@ -91,6 +92,12 @@ class ExtractDB(Extract):
 
         connection = self.db.connect()
         self.data = pd.read_sql(sql=query, con=connection)
+        pd.set_option('display.max_rows', None)
+        #print(self.data["col11"][0:11])
+        #print(self.data["col12"][0:11])
+        #print(self.data["col13"][0:11])
+        #print(self.data["col1"][0:11])
+
         connection.close()
 
 

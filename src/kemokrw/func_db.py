@@ -14,8 +14,15 @@ def execute_srquery(conn, query):
     for i in result:
         return i[0]
 
+def get_db_collation(conn,dbms,param):
+    connection = conn
+    query = config.DB_COLLATION[dbms][param]
+    rs = connection.execute(query)
+    collation = rs.fetchone()[0]
+    return collation
 
-def get_db_metadata(conn, dbms, model, table, condition):
+
+def get_db_metadata(conn, dbms, model, table, condition, key):
     # Incluir manejo de errores para verificar conexión a base de datos 3 veces
     connection = conn
     connection.execute("SELECT 1;")
@@ -43,8 +50,10 @@ def get_db_metadata(conn, dbms, model, table, condition):
             col["type"] = "other"
 
         for j in config.COLUMN_CHECK[dbms][col["type"]]:
+
+            orderby = "order by {}".format(key) if col["type"] == "text" and j=="check_hash" else ""
             query = config.COLUMN_CHECK[dbms][col["type"]][j].format(column=model[i]["name"], table=table,
-                                                                     condition=condition)
+                                                                     condition=condition, order=orderby)
             #print(query)
             col[j] = execute_srquery(connection, query)
             #print(col[j])

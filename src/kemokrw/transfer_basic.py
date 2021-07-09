@@ -119,9 +119,8 @@ class BasicTransfer(Transfer):
 
         while n_try <= total_tries and not self.verification:
             print("Transferring data. Try {0} out of {1}".format(n_try, total_tries))
-
             self.dst.save_data(self.src.data)
-            self.dst.get_metadata()
+
             self.verify()
             n_try += 1
 
