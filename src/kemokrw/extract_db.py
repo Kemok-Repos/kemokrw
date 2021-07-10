@@ -1,6 +1,6 @@
 from kemokrw.extract import Extract
 from sqlalchemy import create_engine
-from kemokrw.func_db import get_db_metadata, model_format_check
+from kemokrw.func_db import get_db_metadata, model_format_check, get_db_collation
 import kemokrw.config_db as config
 import pandas as pd
 
@@ -61,17 +61,22 @@ class ExtractDB(Extract):
         self.metadata = dict()
         self.data = None
         self.key = key
+        self.src_lc_monetary = ''
 
         # Inicializa metadata
         model_format_check(self.model)
         self.get_metadata()
+        self.get_collation()
 
 
     @classmethod
     def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
         """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
         pass
-        
+
+    def get_collation(self):
+        self.src_lc_monetary = get_db_collation(self.db,self.dbms,'lc_monetary')
+
     
     def get_metadata(self):
         """Método que actualiza la metadata de la tabla de extracción"""

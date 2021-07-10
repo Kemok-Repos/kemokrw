@@ -1,4 +1,4 @@
-db: postgresql+psycopg2://postgres:maitreya1234@localhost:5433/srtendero
+db: postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118:5432/srtendero
 table: erp_gom_facturadetalle
 model:
     col1:

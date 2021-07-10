@@ -13,14 +13,14 @@ from sqlalchemy import create_engine
 def registrolog(f,msg):
     f.write(msg)
 
-def Tranfer(Key, condition,total_Tp, tp):
+def Tranfer(Key, condition,total_Tp, tp,npartition):
     a1 = datetime.datetime.now()
     print(str(datetime.datetime.now()) +  ' Calculating Sub Table partitions..')
     tuplaKey = ExtractDB(src_config['db'], src_config['table'], src_config['model'], order="order by 1", condition=condition,key=Key)
     tuplaKey.get_dataId()
 
     longitud = tuplaKey.data.shape[0]
-    n_partition = 5
+    n_partition = npartition
 
     elementos = longitud // n_partition
     k = 0
@@ -52,7 +52,7 @@ def Tranfer(Key, condition,total_Tp, tp):
         stri = 'Procesing Sub table partition {} --- {} \n'.format(indice, ExtractCondition[str(indice)])
         print(stri)
         src = ExtractDB(src_config['db'], src_config['table'], src_config['model'], order="", condition=ExtractCondition[str(indice)], key=Key)
-        dst = LoadDB(dst_config['db'], dst_config['table'], dst_config['model'], order="", condition=ExtractCondition[str(indice)], key=Key)
+        dst = LoadDB(dst_config['db'], dst_config['table'], dst_config['model'], order="", condition=ExtractCondition[str(indice)], key=Key, src_lc_collation=src.src_lc_monetary)
         src.get_data()
 
         trf = BasicTransfer(src, dst)
@@ -82,8 +82,7 @@ if __name__ == "__main__":
 
     # calulo de particiones pack compatibles com pandas
     query = config.TABLE_CHECK["check_rows"].format(table=src_config['table'], condition="")
-    db = DbClient(uuid.uuid1().hex, "postgresql+psycopg2://postgres:maitreya1234@localhost:5433/srtendero")
-    #db = DbClient(uuid.uuid1().hex, "postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118:5432/srtendero")
+    db = DbClient(uuid.uuid1().hex, src_config["db"])
     longitud = db.ejecutar(query)[0]
     condition = {}
     print(str(datetime.datetime.now()) +  ' Calculating Table partitions..')
@@ -106,7 +105,6 @@ if __name__ == "__main__":
                 break
             valor_old = valor
             print(str(datetime.datetime.now()) + ' Table partition {} --- {}'.format(indice - 1  , condition[str(indice)]))
-            #print(condition[str(indice)])
 
     #print(str(datetime.datetime.now())+ "partition table calulated...")
     condition[str(indice)].replace('<', '<=')
@@ -118,7 +116,7 @@ if __name__ == "__main__":
             stri = str(datetime.datetime.now())+' Procesing table Partition  No. {} --- {} '.format(int(i) -1, condition[i])
             #registrolog(f, str(datetime.datetime.now()) + stri)
             print(stri)
-            Tranfer(Key=key, condition=condition[i],total_Tp=total_tp, tp=int(i) - 1)
+            Tranfer(Key=key, condition=condition[i],total_Tp=total_tp, tp=int(i) - 1,npartition=5)
             b = datetime.datetime.now()
             tiempo = b - a
             print(str(datetime.datetime.now()) + ' Total Time Elapsed: ' + str(round(tiempo.total_seconds(), 4)) + 'seg')

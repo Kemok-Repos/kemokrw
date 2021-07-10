@@ -97,21 +97,24 @@ class LoadDB(Load):
 
         data.columns = names
 
-        if self.dst_lc_monetary == 'es_VE.UTF-8' and self.src_lc_monetary == 'en_US.UTF-8':
-            for i in modeyfield:
-                data[i] = data[i].str.replace('[Bs.,$]*', '', regex=True)
-                # data[i] = data[i].str.replace('Bs.', '', regex=False).replace('$', '', regex=False)
+        for i in modeyfield:
+            data[i] = data[i].str.replace('Bs.', '', regex=False)
+            data[i] = data[i].str.replace('$', '', regex=False)
+            if self.dst_lc_monetary == 'es_VE.UTF-8' and self.src_lc_monetary == 'en_US.UTF-8':
                 data[i] = data[i].str.replace(',', '', regex=False)
                 data[i] = data[i].str.replace('.', ',', regex=False)
-
-
 
         self.chunksize = 10000
         trans = connection.begin()
         try:
-            data.to_sql(name=self.table, con=connection, if_exists='append', index=False, chunksize=self.chunksize)
             print(data["montoiva"][0:11])
             print(data["idfacturadetalle"][0:11])
+            data.to_sql(name=self.table, con=connection, if_exists='append',
+                        index=False, chunksize=self.chunksize)
+
+            print(data["montoiva"][0:11])
+            print(data["idfacturadetalle"][0:11])
+
         except Exception as e:
             print(e)
         trans.commit()
