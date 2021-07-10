@@ -126,7 +126,7 @@ class DbKeyTransfer():
 
         for indice in ExtractCondition:
             a = datetime.datetime.now()
-            stri = 'Processing Sub table partition {} --- {} \n'.\
+            stri = 'Processing Sub table partition {} --- {}' .\
                 format(indice, ExtractCondition[str(indice)])
 
             print(stri)
@@ -134,8 +134,8 @@ class DbKeyTransfer():
                             self.src_config["model"], order="",
                             condition=ExtractCondition[str(indice)], key=Key)
 
-            dst = LoadDB(self.src_config["db"], self.src_config["table"],
-                         self.src_config["model"], order="",
+            dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
+                         self.dst_config["model"], order="",
                          condition=ExtractCondition[str(indice)],
                          key=Key, src_lc_collation=src.src_lc_monetary)
 

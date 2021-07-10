@@ -107,13 +107,8 @@ class LoadDB(Load):
         self.chunksize = 10000
         trans = connection.begin()
         try:
-            print(data["montoiva"][0:11])
-            print(data["idfacturadetalle"][0:11])
             data.to_sql(name=self.table, con=connection, if_exists='append',
                         index=False, chunksize=self.chunksize)
-
-            print(data["montoiva"][0:11])
-            print(data["idfacturadetalle"][0:11])
 
         except Exception as e:
             print(e)
