@@ -20,4 +20,11 @@ class LoadGSheet(Load):
     save_data():
         Almacena la data de un pandas.DataFrame Object una tabla en Google Sheets.
     """
-    pass
+    def get_metadata(self):
+        pass
+
+
+    def save_data(self):
+        pass
+
+
