@@ -1,8 +1,11 @@
 import os.path
 #
+from sqlalchemy import create_engine
 import pandas as pd
 from kemokrw.extract import Extract
 from kemokrw.gsheet import *
+import kemokrw.config_db as config
+from kemokrw.func_db import *
 
 
 class ExtractGSheet(Extract):
@@ -26,14 +29,13 @@ class ExtractGSheet(Extract):
         Obtiene la data de la tabla en Google Sheets.
     """
 
-    def __init__(self, jsonconfig, milog, dblog, metadata, data):
+    def __init__(self, jsonconfig,  metadata, data):
         self.jsonconfig = jsonconfig
         self.metadata = metadata
         self.data = data
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
         self.gsheet = None
-        self.milog = milog
-        self.dbloger = dblog
+
 
     def get_metadata(self):
         pass
@@ -63,8 +65,8 @@ class ExtractGSheet(Extract):
         try:
             self.gsheet = GSheet(g_object='spreadsheets',
                                  jsonconfig=self.jsonconfig,
-                                 milog=self.milog,
-                                 dblog=self.dbloger)
+                                 debug=True)
+
             self.gsheet.gauth()
             estado = 0
         except Exception as e:
@@ -88,9 +90,7 @@ class ExtractGSheet(Extract):
                 msg = ",  Contact Kemok Administrator"
                 return {"Api Response": estados[str(8)] + msg,
                         "Result": "8", "Err": valor}
-                estado = 8
-                milog.error(estados[estado] + str(spreadsheet_id)
-                            + 'cells:' + str(cells) + str(e))
+
 
             if estado != 8:
                 # load last_read_row, and read new_rows (if any)
@@ -112,9 +112,7 @@ class ExtractGSheet(Extract):
 
                     return {"Api Response": estados[str(7)] + msg,
                             "Result": '7', "err": valor}
-                    estado = 7
-                    milog.error(estados[estado] + str(spreadsheet_id) +
-                                'cells:' + str(cells) + ' ' + str(e))
+
 
                 if estado != 7:
                     # convert to dictionary
@@ -122,26 +120,14 @@ class ExtractGSheet(Extract):
                     # --print(df)
                     values, err = self.gsheet.prepare(values, headers)
                     if values != [] and err == {}:
-                        x = self.dbloger.get_ServiceStatus()
-                        if x:
-                            if x == 'stoped':
-                                return {"Api Response": "gsheet Service STOPED"}
-                            elif x == 'started':
-                                pass
-                            else:
-                                return {"Api Response": "g2sheet Service bad parameters maestro_de_gsheetdb"}
 
-                        else:
-                            return {"Api Response": "Fail Maestro g2sheet"}
-
-                        salida = self.gsheet.store(values, tipo)
+                        salida = self.gsheet.store_db(values, tipo)
                         if salida == {}:
                             index += len(values)
                             index = self.gsheet.last_read_row(index)
                             resultado = {'registros': str(len(values))}
                         else:
                             estado = 6
-                            milog.error("Api Response:estado 6" + str(salida))
                             msg = ",  Contact Kemok Administrator"
                             return {"Api Response": estados[str(estado)] + msg,
                                     "Result": resultado, 'info:': salida}

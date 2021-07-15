@@ -221,8 +221,6 @@ def selector_microservice():
             metadata = ''
             data = ''
             gsheet = ExtractGSheet(jsonconfig=jsonconfig,
-                                   milog=milog,
-                                   dblog=dbloger,
                                    metadata=metadata,
                                    data=data)
 

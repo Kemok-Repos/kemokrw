@@ -1,3 +1,5 @@
+from sqlalchemy import create_engine
+import json
 import os.path
 import pickle
 import datetime
@@ -5,17 +7,23 @@ from glob import glob
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from kemokrw.dblog import *
 from yaml import load, Loader
+import pprint
+
+
 
 class GSheet():
 
-    def __init__(self, g_object, jsonconfig, milog, dblog):
+    def __init__(self, g_object, jsonconfig, debug=True):
         self.g_object = g_object
-        self.milog = milog
         self.jsonconfig = jsonconfig
-        self.dblog = dblog
+        db = "postgresql://admin:admin@localhost:5433/etl" if debug == True \
+            else "postgresql://katadmin:$q%$=0#WyCI1.@45.56.117.5:5432/katdb"
 
+        self.dbmaestro = create_engine(db)
+
+        #self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+        self.SCOPES = ['https://www.googleapis.com/auth/drive']
 
     def ls4(self, path, filtro=""):
         spath = path + filtro
@@ -31,22 +39,17 @@ class GSheet():
                 with open(file_gsheet_token, 'rb') as token:
                     creds = pickle.load(token)
         except Exception as e:
-            self.milog.error('Falla lectura archivo metodo gauth archivo '
-                        'file_gsheet_token: '
-                        + str(file_gsheet_token) + '... ' + str(e))
             msg = self.ls4('os.path.dirname(__file__))')
-            self.milog.error('directorio actual....:' + str(msg) + '-->'
-                        + str(os.path.dirname(__file__)))
+            print(str(e))
 
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                self.milog.info('Refreshing Token ..')
                 try:
                     creds.refresh(Request())
                 except Exception as e:
                     valor = str(e).replace('\"', '').replace(":", ' ') \
                         .replace("%", '(porcentaje)')
-                    self.milog.error('Fail credential refresh: ' + valor)
+                    print('Fail credential refresh: ' + valor)
                     return False
             else:
                 try:
@@ -55,21 +58,21 @@ class GSheet():
                     flow = InstalledAppFlow.from_client_secrets_file(
                         file_gsheet_credential, self.SCOPES)
                 except Exception as e:
-                    self.milog.error(
+                    print(
                         'Fail  InstalledAppFlow file_gsheet_credential, install google-cloud-storage: ' +
                         str(file_gsheet_credential) + '... ' + str(e))
 
                 try:
                     creds = flow.run_local_server(port=0)
                 except Exception as e:
-                    self.milog.error('Fail flow.run_local_server  : ' + str(e))
+                    print('Fail flow.run_local_server  : ' + str(e))
 
             # Save the credentials for the next run
             try:
                 with open(file_gsheet_token, 'wb') as token:
                     pickle.dump(creds, token)
             except Exception as e:
-                self.milog.error('Fail save Token ' + file_gsheet_token + ' ' + str(e))
+                print('Fail save Token ' + file_gsheet_token + ' ' + str(e))
 
         # build service
         print('build...')
@@ -181,7 +184,7 @@ class GSheet():
 
         return prepared2, {}
 
-    def store(self, rows, tipo):
+    def store_db(self, rows, tipo):
         # load settings
         file_sql_command = os.path.dirname(__file__) + '/settings.yaml'
 
@@ -189,20 +192,20 @@ class GSheet():
             with open(file_sql_command) as file:
                 settings = load(file, Loader)
         except Exception as e:
-            self.milog.error('Falla de lectura archivo sql_command yaml' +
+            print('Falla de lectura archivo sql_command yaml' +
                         str(file_sql_command) + ' Exception:' + str(e))
             return {'err': "store 001", 'detail': str(e)}
 
 
         target = self.jsonconfig['target']
-        db = self.dblog.DbConections(int(target))
+        db = self.DbConections(int(target))
 
         try:
             engine = create_engine(db)
             conn = engine.connect()
 
         except Exception as e:
-            self.milog.error('Falla de inicio conexion db:' + str(db) +
+            print('Falla de inicio conexion db:' + str(db) +
                         ' Exception:' + str(e))
             valor = str(e).replace('\"', '').replace(":", ' ') \
                 .replace("%", '(porcentaje)')
@@ -214,7 +217,7 @@ class GSheet():
         except Exception as e:
             valor = str(e).replace('\"', '').replace(":", ' ') \
                 .replace("%", '(porcentaje)')
-            self.milog.error("Falla de inicio conexion db:" + str(db)
+            print("Falla de inicio conexion db:" + str(db)
                         + " Exception:" + str(valor))
             return {"err": "store 003", "detail": valor}
 
@@ -228,7 +231,7 @@ class GSheet():
                         conn.execute(sql_delete)
                         # ---trans.commit()
                     else:
-                        self.milog.error('Falla tabla ' + self.jsonconfig["model_name"] +
+                        print('Falla tabla ' + self.jsonconfig["model_name"] +
                                     ' no encontrada:' + str(db))
                         valor = 'tabla ' + str(self.jsonconfig["model_name"]) + \
                                 ' No exist'
@@ -236,7 +239,7 @@ class GSheet():
 
                 except Exception as e:
                     x = str(e)
-                    self.milog.error('Falla eliminando registro tabla db:' +
+                    print('Falla eliminando registro tabla db:' +
                                 str(db) + ' Exception:' + x)
                     valor = x.replace('\"', '').replace(":", ' ') \
                         .replace("%", '(porcentaje)')
@@ -265,7 +268,7 @@ class GSheet():
                 conn.execute(sql_insert)
                 trans.commit()
             except Exception as e:
-                self.milog.error('Falla ejecutando sql:' + str(sql_insert) +
+                print('Falla ejecutando sql:' + str(sql_insert) +
                             ' Exception:' + str(e))
                 x = str(e)
                 i = x.find('[SQL')
@@ -282,3 +285,75 @@ class GSheet():
         conn.close()
         return fail
 
+    def update_sheet(self, data):
+        self.gauth('sheets')
+        #spreadsheet_id = '1ODUzm3WXzz9DItY0nXMkrqG0HLgtOLOi2BEtdCrkhIo'  # TODO: Update placeholder value.
+        spreadsheet_id = self.jsonconfig["spreadsheet_id"]
+        # The A1 notation of the values to update.
+        #range_ = 'primera!A1:E2'  # TODO: Update placeholder value.
+
+        sheet_name = self.jsonconfig['sheet_name']
+        # How the input data should be interpreted.
+        value_input_option = 'RAW'  # TODO: Update placeholder value.
+        #values = [[500, 400, 300, 200, 100, ], [500, 400, 300, 200, 100, ], ]
+        Body = {'values': data, }
+        value_range_body = {}
+        request = self.service.spreadsheets().values().update(spreadsheetId=spreadsheet_id,
+                                                         range=range,
+                                                         valueInputOption=value_input_option,
+                                                         body=Body)
+        response = request.execute()
+
+        # TODO: Change code below to process the `response` dict:
+        pprint(response)
+
+    def DbConections(self, dbcode):
+        # será implementada mediante passbolt
+
+        dbConection = []
+        pwd_gsheet = '7ba40379e4597bf535dfa79f9c45b60a'
+        pwd_gsheet2 = 'jbfdbi%%ms.$2773lnnwn'
+
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@50.116.33.86/panamacompra')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@45.56.113.157/guatecompras')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@45.79.204.111/bago')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@45.79.204.111/bago_caricam')
+        dbConection.append('postgresql://notificaciones_marketing:'
+                           '7ba40379e4597bf535dfa79f9c45b60a'
+                           '@192.155.95.216/notificaciones_marketing')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@bacgt.cg9u5bhsoxjc.us-east-1.rds.amazonaws.com/bacgt')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet2
+                           + '@172.105.156.208/aquasistemas')
+        dbConection.append('postgresql://forge:68qCIg1PMdOHOkC09qsE@96.126.123.195:5432/expolandivar2021')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@45.79.216.118/srtendero')
+
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@45.79.9.70/guatecompras2')
+
+        # db pruebas
+        dbConection.append('postgresql://admin:admin@localhost:5433/panamacompra')
+        dbConection.append('postgresql://admin:admin@localhost:5433/guatecompras')
+        dbConection.append('postgresql://admin:admin@localhost:5433/bago')
+        dbConection.append('postgresql://admin:admin@localhost:5433/bago_caricam')
+        dbConection.append('postgresql://notificaciones_marketing:'
+                           '7ba40379e4597bf535dfa79f9c45b60a'
+                           '@192.155.95.216/notificaciones_marketing')
+        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                           + '@45.79.9.70/guatecompras2')
+
+        return dbConection[dbcode]
+
+
+    def get_ServiceStatus(self):
+        sql = "SELECT estatus FROM maestro_de_gsheetdb limit 1"
+        conn = self.dbmaestro.connect()
+        rs = conn.execute(sql)
+        total = rs.fetchone()[0]
+        conn.close()
+        return total

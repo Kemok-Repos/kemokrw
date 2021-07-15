@@ -98,28 +98,9 @@ class ExtractDB(Extract):
         connection = self.db.connect()
         self.data = pd.read_sql(sql=query, con=connection)
         pd.set_option('display.max_rows', None)
-        #print(self.data["col11"][0:11])
-        #print(self.data["col12"][0:11])
-        #print(self.data["col13"][0:11])
-        #print(self.data["col1"][0:11])
 
         connection.close()
 
 
-    def get_dataId(self):
-        """Método que para extraer data"""
 
-        j = []
-        for i in self.model:
-            j.append("{0} AS {1}".format(self.model[i]["name"], i))
-            break
-
-        columns = ", ".join(j)
-
-        query = config.TABLE_QUERY.format(columns=columns, table=self.table,
-                                          condition=self.condition, order=self.order )
-
-        connection = self.db.connect()
-        self.data = pd.read_sql(sql=query, con=connection)
-        connection.close()
 
