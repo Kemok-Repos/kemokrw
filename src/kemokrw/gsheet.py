@@ -14,13 +14,11 @@ import pprint
 
 class GSheet():
 
-    def __init__(self, g_object, jsonconfig, debug=True):
+    def __init__(self, g_object, spreadsheet_id, sheet, model):
         self.g_object = g_object
-        self.jsonconfig = jsonconfig
-        db = "postgresql://admin:admin@localhost:5433/etl" if debug == True \
-            else "postgresql://katadmin:$q%$=0#WyCI1.@45.56.117.5:5432/katdb"
-
-        self.dbmaestro = create_engine(db)
+        self.model = model
+        self.spreadsheet_id = spreadsheet_id
+        self.sheet = sheet
 
         #self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
         self.SCOPES = ['https://www.googleapis.com/auth/drive']
@@ -99,7 +97,7 @@ class GSheet():
 
     def read_spreadsheet(self, range):
         """Simple method to read from google and return as list of lists."""
-        result = self.ga_ss.values().get(spreadsheetId=self.jsonconfig["spreadsheet_id"], range=range).execute()
+        result = self.ga_ss.values().get(spreadsheetId=self.spreadsheet_id, range=range).execute()
         print(range)
         values = result.get('values', [])
         return values
@@ -127,7 +125,7 @@ class GSheet():
             return strFecha
 
         prepared2 = []
-        columnas_map = self.jsonconfig['map_sheet_model'].keys()
+        columnas_map = self.model['map_sheet_model'].keys()
         for i in values:
             dictValor = {}
             column = ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1', 'i1', 'j1', 'k1', 'l1', 'm1', 'n1', 'o1', 'p1',
@@ -138,17 +136,17 @@ class GSheet():
                            {"State Api Response": "Error bad column " +
                                                   str(columnas_map[xcol])}
             col = -1
-            for key in self.jsonconfig['model']:
+            for key in self.model['fields']:
                 col = col + 1
                 # if columnas_map > 1:
-                while column[col] not in self.jsonconfig['map_sheet_model'].keys():
+                while column[col] not in self.model['map_sheet_model'].keys():
                     x, col = i.pop(0), col + 1
 
-                if column[col] in self.jsonconfig['map_sheet_model'].keys():
-                    if self.jsonconfig['model'][key] == 'datetime':
+                if column[col] in self.model['map_sheet_model'].keys():
+                    if self.model['fields'][key] == 'datetime':
                         if i:
                             try:
-                                format = self.jsonconfig['formats']['datetime']
+                                format = self.model['formats']['datetime']
                                 strdate = SpanishMonthFormat(str(i.pop(0)), format)
                                 dictValor[key] = datetime.datetime. \
                                     strptime(strdate, format)
@@ -164,11 +162,11 @@ class GSheet():
                         else:
                             dictValor[key] = None
 
-                    elif self.jsonconfig['model'][key] == 'json':
+                    elif self.model['fields'][key] == 'json':
                         dictValor[key] = escape(json.dumps(
                             {headers[j]: i[j] for j in range(len(i))}))
 
-                    elif self.jsonconfig['model'][key] == 'numeric':
+                    elif self.model['fields'][key] == 'numeric':
                         if i:
                             valor = escape(i.pop(0))
                             dictValor[key] = valor.replace(',', '').replace('%', '').replace('$', '').replace('Q', '')
@@ -196,9 +194,7 @@ class GSheet():
                         str(file_sql_command) + ' Exception:' + str(e))
             return {'err': "store 001", 'detail': str(e)}
 
-
-        target = self.jsonconfig['target']
-        db = self.DbConections(int(target))
+        db = self.model["db"]
 
         try:
             engine = create_engine(db)
@@ -226,14 +222,14 @@ class GSheet():
             if tipo == 'full':
                 try:
                     tablas = engine.table_names()
-                    if self.jsonconfig["model_name"] in tablas:
-                        sql_delete = settings['delete'] % self.jsonconfig["model_name"]
+                    if self.model["table"] in tablas:
+                        sql_delete = settings['delete'] % self.model["table"]
                         conn.execute(sql_delete)
                         # ---trans.commit()
                     else:
-                        print('Falla tabla ' + self.jsonconfig["model_name"] +
+                        print('Falla tabla ' + self.model["table"] +
                                     ' no encontrada:' + str(db))
-                        valor = 'tabla ' + str(self.jsonconfig["model_name"]) + \
+                        valor = 'tabla ' + str(self.model["table"]) + \
                                 ' No exist'
                         return {"err": "store 004", "detail": valor}
 
@@ -249,16 +245,16 @@ class GSheet():
                 # trans = conn.begin()
                 fields = '('
                 settings['insert2'] = "("
-                for field in self.jsonconfig["map_sheet_model"]:
-                    fields = fields + self.jsonconfig["map_sheet_model"][field] + ','
+                for field in self.model["map_sheet_model"]:
+                    fields = fields + self.model["map_sheet_model"][field] + ','
                     settings['insert2'] = \
                         settings['insert2'] + "'%(" \
-                        + self.jsonconfig["map_sheet_model"][field] + ")s',"
+                        + self.model["map_sheet_model"][field] + ")s',"
 
                 settings['insert2'] = settings['insert2'][:-1] + ')'
                 fields = fields[:-1] + ')'
 
-                sql_insert = 'insert into ' + self.jsonconfig["model_name"] + fields
+                sql_insert = 'insert into ' + self.model["table"] + fields
                 sql_insert = sql_insert + ' values %s' % ',\n' \
                     .join([settings['insert2'] % row for row in rows])
                 # print(sql_insert)
@@ -288,72 +284,23 @@ class GSheet():
     def update_sheet(self, data):
         self.gauth('sheets')
         #spreadsheet_id = '1ODUzm3WXzz9DItY0nXMkrqG0HLgtOLOi2BEtdCrkhIo'  # TODO: Update placeholder value.
-        spreadsheet_id = self.jsonconfig["spreadsheet_id"]
+        #spreadsheet_id = self.jsonconfig["spreadsheet_id"]
         # The A1 notation of the values to update.
         #range_ = 'primera!A1:E2'  # TODO: Update placeholder value.
 
-        sheet_name = self.jsonconfig['sheet_name']
+        #sheet_name = self.jsonconfig['sheet_name']
         # How the input data should be interpreted.
         value_input_option = 'RAW'  # TODO: Update placeholder value.
         #values = [[500, 400, 300, 200, 100, ], [500, 400, 300, 200, 100, ], ]
         Body = {'values': data, }
         value_range_body = {}
-        request = self.service.spreadsheets().values().update(spreadsheetId=spreadsheet_id,
-                                                         range=range,
-                                                         valueInputOption=value_input_option,
-                                                         body=Body)
+        request = self.ga_ss.spreadsheets().values().update(spreadsheetId=self.spreadsheet_id,
+                                                            range=range,
+                                                            valueInputOption=value_input_option,
+                                                            body=Body)
         response = request.execute()
 
         # TODO: Change code below to process the `response` dict:
         pprint(response)
 
-    def DbConections(self, dbcode):
-        # será implementada mediante passbolt
 
-        dbConection = []
-        pwd_gsheet = '7ba40379e4597bf535dfa79f9c45b60a'
-        pwd_gsheet2 = 'jbfdbi%%ms.$2773lnnwn'
-
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@50.116.33.86/panamacompra')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@45.56.113.157/guatecompras')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@45.79.204.111/bago')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@45.79.204.111/bago_caricam')
-        dbConection.append('postgresql://notificaciones_marketing:'
-                           '7ba40379e4597bf535dfa79f9c45b60a'
-                           '@192.155.95.216/notificaciones_marketing')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@bacgt.cg9u5bhsoxjc.us-east-1.rds.amazonaws.com/bacgt')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet2
-                           + '@172.105.156.208/aquasistemas')
-        dbConection.append('postgresql://forge:68qCIg1PMdOHOkC09qsE@96.126.123.195:5432/expolandivar2021')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@45.79.216.118/srtendero')
-
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@45.79.9.70/guatecompras2')
-
-        # db pruebas
-        dbConection.append('postgresql://admin:admin@localhost:5433/panamacompra')
-        dbConection.append('postgresql://admin:admin@localhost:5433/guatecompras')
-        dbConection.append('postgresql://admin:admin@localhost:5433/bago')
-        dbConection.append('postgresql://admin:admin@localhost:5433/bago_caricam')
-        dbConection.append('postgresql://notificaciones_marketing:'
-                           '7ba40379e4597bf535dfa79f9c45b60a'
-                           '@192.155.95.216/notificaciones_marketing')
-        dbConection.append('postgresql://g2sheets:' + pwd_gsheet
-                           + '@45.79.9.70/guatecompras2')
-
-        return dbConection[dbcode]
-
-
-    def get_ServiceStatus(self):
-        sql = "SELECT estatus FROM maestro_de_gsheetdb limit 1"
-        conn = self.dbmaestro.connect()
-        rs = conn.execute(sql)
-        total = rs.fetchone()[0]
-        conn.close()
-        return total

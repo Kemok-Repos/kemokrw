@@ -1,3 +1,9 @@
+'''
+ Uilza la clase la libreria kemokrw especificamente con la clase extradt_gsheet.
+ se utiliza acopla al marco de ejecución de la api y se prueba mediante gsheet.
+ '''
+
+
 from flask import Flask, jsonify, request
 from kemokrw.extract_gsheet import *
 from kemokrw.dblog import *
@@ -8,6 +14,7 @@ import sys
 import os
 from glob import glob
 import uuid
+import re
 
 # import passboltapi
 def ls4(path, filtro=""):
@@ -21,6 +28,45 @@ app = Flask(__name__)
 app.config['Ambiente'] = 'debug'
 #app.config['Ambiente'] = 'production'
 
+def DbConections(dbcode):
+    dbConection = []
+    pwd_gsheet = '7ba40379e4597bf535dfa79f9c45b60a'
+    pwd_gsheet2 ='jbfdbi%%ms.$2773lnnwn'
+
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@50.116.33.86/panamacompra')
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@45.56.113.157/guatecompras')
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@45.79.204.111/bago')
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@45.79.204.111/bago_caricam')
+    dbConection.append('postgresql://notificaciones_marketing:'
+                       '7ba40379e4597bf535dfa79f9c45b60a'
+                       '@192.155.95.216/notificaciones_marketing')
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@bacgt.cg9u5bhsoxjc.us-east-1.rds.amazonaws.com/bacgt')
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet2
+                       + '@172.105.156.208/aquasistemas')
+    dbConection.append('postgresql://forge:68qCIg1PMdOHOkC09qsE@96.126.123.195:5432/expolandivar2021')
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@45.79.216.118/srtendero')
+
+    dbConection.append('postgresql://g2sheets:' + pwd_gsheet
+                       + '@45.79.9.70/guatecompras2')
+
+
+
+    # db pruebas
+    dbConection.append('postgresql://admin:admin@localhost:5433/panamacompra')
+    dbConection.append('postgresql://admin:admin@localhost:5433/guatecompras')
+    dbConection.append('postgresql://admin:admin@localhost:5433/bago')
+    dbConection.append('postgresql://admin:admin@localhost:5433/bago_caricam')
+    dbConection.append('postgresql://notificaciones_marketing:'
+                       '7ba40379e4597bf535dfa79f9c45b60a'
+                       '@192.155.95.216/notificaciones_marketing')
+
+    return dbConection[dbcode]
 
 def ValidJsonConfig(jsonconfig,milog):
     keys = ["microservice_id", "api_type", "spreadsheet_id", "sheet_name",
@@ -119,7 +165,6 @@ def validarTipo(tipo: str):
 
     return falla_parametro
 
-
 def ConectLog(tipo):
 
     if tipo == 'production':
@@ -133,49 +178,6 @@ def ConectLog(tipo):
 @app.errorhandler(404)
 def page_not_found():
     return jsonify({"Api response":"ok", "response": "Kemokrw extract_gsheet service endpoint not implemented"})
-
-# UpdateMaestroGsheet
-@app.route("/start", methods=['POST', 'GET'])
-def start():
-    dbloger = None
-    try:
-        milog = configLogger()
-        dbloger = ConectLog(app.config["Ambiente"])
-        dbloger.UpdateMaestroGsheet('%', 'started')
-        dbloger.logger('manager Kemokrw extract_gsheet', 'info', 'info',
-                       {"Api response": "Kemokrw extract_gsheet service was STARTED"})
-
-        return jsonify({"Api response":"OK", "response":"Kemokrw extract_gsheet Service was STARTED"})
-    except Exception as excep:
-        dbloger.logger('manager Kemokrw extract_gsheet', 'info', 'error', {"Api response": str(excep)})
-        return jsonify({"Api response": "OK", "response": str(excep)})
-
-@app.route("/stop", methods=['POST', 'GET'])
-def stop():
-
-    dbloger = None
-    try:
-        status = True
-        milog = configLogger()
-        dbloger = ConectLog(app.config["Ambiente"])
-        dbloger.UpdateMaestroGsheet('%%', 'stoped')
-        dbloger.logger('manager Kemokrw extract_gsheet', 'info', 'info',
-                       {"Api response": "Kemokrw extract_gsheet service was STOPPED"})
-
-        return jsonify({"Api response": "OK", "response": "Kemokrw extract_gsheet Service was STOPPED"})
-    except Exception as excep:
-        dbloger.logger('manager Kemokrw extract_gsheet', 'info', 'error', {"Api response": str(excep)})
-        return jsonify({"Api response": "fail", "response": str(excep)})
-
-@app.route("/status", methods=['POST', 'GET'])
-def status():
-    status = True
-    milog = configLogger()
-    dbloger = ConectLog(app.config["Ambiente"])
-    valor = dbloger.get_ServiceStatus()
-    dbloger.logger('', 'info', 'info', {"Api response": "get status Kemokrw extract_gsheet ={}".format(valor)})
-    return jsonify({"Api response": valor})
-
 
 @app.route("/", methods=['POST', 'GET'])
 def selector_microservice():
@@ -218,12 +220,19 @@ def selector_microservice():
                 jsonconfig["spreadsheet_id"], jsonconfig['sheet_name'], \
                 jsonconfig["model"]
 
-            metadata = ''
-            data = ''
-            gsheet = ExtractGSheet(jsonconfig=jsonconfig,
-                                   metadata=metadata,
-                                   data=data)
 
+            model = {}
+            model["db"], model["table"], \
+            model["fields"], \
+            model["map_sheet_model"], model["formats"] = DbConections(int(jsonconfig["target"])), \
+                                      jsonconfig["model_name"], \
+                                      jsonconfig["model"],\
+                                      jsonconfig["map_sheet_model"],  jsonconfig["formats"]
+
+            gsheet = ExtractGSheet(spreadsheet_id=spreadsheet_id,
+                                   sheet=jsonconfig["sheet_name"],
+                                   header=jsonconfig["header_cells"],
+                                   model=model)
             k = gsheet.tranfer() \
                 if tipo in ["new_only", "full"] else status
         else:
@@ -251,16 +260,6 @@ def selector_microservice():
 
     return jsonify({"Server": k, ".microservice_id":
                                  str(jsonconfig["microservice_id"])})
-
-
-@app.route("/test")
-def test_get():
-    return "Test nice... "
-
-
-@app.route("/test_json", methods=['POST'])
-def test_post():
-    return jsonify(request.json)
 
 if __name__ == '__main__':
 

@@ -1,5 +1,6 @@
 from kemokrw.load import Load
 from kemokrw.gsheet import *
+from kemokrw.func_db import *
 
 
 class LoadGSheet(Load):
@@ -21,16 +22,17 @@ class LoadGSheet(Load):
     save_data():
         Almacena la data de un pandas.DataFrame Object una tabla en Google Sheets.
     """
-    def __init__(self, jsonconfig):
-        self.jsonconfig = jsonconfig
+    def __init__(self, spreadsheet_id, sheet, model):
+        self.spreadsheet_id = spreadsheet_id
+        self.sheet = sheet
+        self.model = model
         self.gsheet = None
 
 
         try:
             self.gsheet = GSheet(g_object='sheets',
-                                 jsonconfig=self.jsonconfig,
-                                 milog=self.milog,
-                                 dblog=self.dbloger)
+                                 jsonconfig=self.jsonconfig  )
+
             self.gsheet.gauth()
             estado = 0
         except Exception as e:

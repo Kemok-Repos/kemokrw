@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from kemokrw.func_db import get_db_metadata, get_db_collation
 
 
+
 class LoadDB(Load):
     """"Clase LoadDB implementación de la clase Load.
 

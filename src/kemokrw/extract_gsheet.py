@@ -4,8 +4,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 from kemokrw.extract import Extract
 from kemokrw.gsheet import *
-import kemokrw.config_db as config
-from kemokrw.func_db import *
+import re
 
 
 class ExtractGSheet(Extract):
@@ -17,7 +16,9 @@ class ExtractGSheet(Extract):
     ---------
     spreadsheet_id : str
     sheet : str
-    model : dict
+    model : dict ej: {"db": "str_sql_alchemy", "table": "table1", "fields": {"field1": "tipodato", "field1": "tipodato"},
+         "map_sheet_model": {"a1": "field1", "b1": "field2", "c1": "field3"},"formats":{"datetime":"%d/%m/%Y %H:%M:%S"}}
+
     metadata : dict
     data : pandas.DataFrame Object
 
@@ -28,14 +29,17 @@ class ExtractGSheet(Extract):
     get_data():
         Obtiene la data de la tabla en Google Sheets.
     """
+    model: dict
 
-    def __init__(self, jsonconfig,  metadata, data):
-        self.jsonconfig = jsonconfig
-        self.metadata = metadata
-        self.data = data
+    def __init__(self, spreadsheet_id, sheet, header, model):
+        self.model = model
+        self.header = header
+        self.spreadsheet_id = spreadsheet_id
+        self.sheet = sheet
+        self.metadata = None
+        self.data = None
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
         self.gsheet = None
-
 
     def get_metadata(self):
         pass
@@ -43,13 +47,13 @@ class ExtractGSheet(Extract):
     def get_data(self):
         pass
 
-
     def Verify(self):
         pass
 
     def tranfer(self):
         resultado, tipo, estado = {}, 'full', -1
 
+        estado = 0
         # automata de estados. esta inicial estado fallido -1
         estados = {"-1": 'Cant Access GoogleSheet service...',
                    "0": 'ok',
@@ -59,25 +63,21 @@ class ExtractGSheet(Extract):
                    "6": "Fail data saving",
                    "5": 'no data to store'}
 
-        spreadsheet_id = self.jsonconfig["spreadsheet_id"]
-
-        # ----spreadsheet_id = '1FnB5kP3cbHuLhhPQCyRtaJALPYAONgMklRMhlSavK6s'
         try:
             self.gsheet = GSheet(g_object='spreadsheets',
-                                 jsonconfig=self.jsonconfig,
-                                 debug=True)
+                                 spreadsheet_id=self.spreadsheet_id,
+                                 sheet=self.sheet,
+                                 model=self.model)
 
             self.gsheet.gauth()
-            estado = 0
+
         except Exception as e:
             return {"Api Response": estados[str(9)], "Result": str(e)}
-            # milog.error(estados[estado] + str(e))
-            # estado = 9
 
         if estado != 9:
             # read headers, used to build json with extra fields
-            sheetName = self.jsonconfig['sheet_name']
-            cells = self.jsonconfig['header_cells']
+            sheetName = self.sheet
+            cells = self.header
             rango = sheetName + '!' + cells
             print(rango)
             try:
@@ -99,9 +99,8 @@ class ExtractGSheet(Extract):
                 else:
                     index = self.gsheet.last_read_row()
                 index = 2
-                sheetName = self.jsonconfig['sheet_name']
-                cells = self.jsonconfig['data_cells'] % index
-                rango = sheetName + '!' + cells
+                cells = re.sub('[0-9]:', '{}:'.format(str(index)), self.header)
+                rango = self.sheet + '!'+cells+'99999'
                 try:
                     values = self.gsheet.read_spreadsheet(rango)
 
