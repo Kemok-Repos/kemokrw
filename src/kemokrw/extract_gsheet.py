@@ -7,6 +7,7 @@ from kemokrw.gsheet import *
 import re
 
 
+
 class ExtractGSheet(Extract):
     """Clase ExtractGSheet implementación de la clase Extract.
 

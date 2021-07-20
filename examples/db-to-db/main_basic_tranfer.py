@@ -6,11 +6,11 @@ import yaml
 
 if __name__ == "__main__":
     # Cargar configuración ejemplo de una base de datos de origen
-    with open('ejemplo_origen_facturadetalle.yaml') as file:
+    with open('ejemplo_origen.yaml') as file:
         src_config = yaml.load(file, Loader=yaml.FullLoader)
 
     # Cargar configuración ejemplo de una base de datos de destino
-    with open('ejemplo_destino_erp_gom_facturadetalle.yaml') as file:
+    with open('ejemplo_destino.yaml') as file:
         dst_config = yaml.load(file, Loader=yaml.FullLoader)
 
     # Crear objeto de extracción

@@ -22,16 +22,19 @@ class LoadGSheet(Load):
     save_data():
         Almacena la data de un pandas.DataFrame Object una tabla en Google Sheets.
     """
-    def __init__(self, spreadsheet_id, sheet, model):
+    def __init__(self, spreadsheet_id, sheet, scope, model):
         self.spreadsheet_id = spreadsheet_id
         self.sheet = sheet
         self.model = model
         self.gsheet = None
-
+        self.scope = scope
+        # ['https://www.googleapis.com/auth/drive']
 
         try:
             self.gsheet = GSheet(g_object='sheets',
-                                 jsonconfig=self.jsonconfig  )
+                                 spreadsheet_id=self.spreadsheet_id,
+                                 sheet=self.sheet,
+                                 model=self.model)
 
             self.gsheet.gauth()
             estado = 0
@@ -39,7 +42,7 @@ class LoadGSheet(Load):
             return {"Api Response": 'fail', "Result": str(e)}
 
     def get_metadata(self):
-        self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition, self.key)
+        self.metadata = get_db_metadata(self.model["db"], self.dbms, self.model, self.table, self.condition, self.key)
 
     def get_data(self):
         pass

@@ -11,17 +11,14 @@ from yaml import load, Loader
 import pprint
 
 
-
 class GSheet():
 
-    def __init__(self, g_object, spreadsheet_id, sheet, model):
+    def __init__(self, g_object, spreadsheet_id, sheet, scope, model):
         self.g_object = g_object
         self.model = model
         self.spreadsheet_id = spreadsheet_id
         self.sheet = sheet
-
-        #self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-        self.SCOPES = ['https://www.googleapis.com/auth/drive']
+        self.scope = scope
 
     def ls4(self, path, filtro=""):
         spath = path + filtro
@@ -54,7 +51,7 @@ class GSheet():
                     file_gsheet_credential = os.path.dirname(__file__) + \
                                              '/' + 'credentials_local.json'
                     flow = InstalledAppFlow.from_client_secrets_file(
-                        file_gsheet_credential, self.SCOPES)
+                        file_gsheet_credential, self.scope)
                 except Exception as e:
                     print(
                         'Fail  InstalledAppFlow file_gsheet_credential, install google-cloud-storage: ' +
@@ -125,34 +122,58 @@ class GSheet():
             return strFecha
 
         prepared2 = []
-        columnas_map = self.model['map_sheet_model'].keys()
+        # preparanda datos
+        mapping = {}
+        fields ={}
+        for i in self.model["model"]:
+            mapping[self.model["model"][i]["name"]] = self.model["model"][i]["map_sheet"]
+            if str(self.model["model"][i]["type"]).find('datetime') != -1 or \
+                    str(self.model["model"][i]["type"]).find('timestamp') != -1:
+                fields[self.model["model"][i]["name"]] = {"type":self.model["model"][i]["type"],
+                                                          "format":self.model["model"][i]["format"]}
+            else:
+                fields[self.model["model"][i]["name"]] = {"type": self.model["model"][i]["type"],
+                                                          "format":''}
+
+        #
+        # columnas_map = self.model['map_sheet_model'].keys()
+        columnas_map = mapping.values()
+
         for i in values:
             dictValor = {}
-            column = ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1', 'i1', 'j1', 'k1', 'l1', 'm1', 'n1', 'o1', 'p1',
-                      'q1', 'r1']
+            column = ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1',
+                      'i1', 'j1', 'k1', 'l1', 'm1', 'n1', 'o1', 'p1',
+                      'q1', 'r1', 's1', 't1', 'v1', 'u1', 'w1', 'x1', 'y1', 'z1']
             for xcol in columnas_map:
                 if xcol not in column:
                     return [], \
                            {"State Api Response": "Error bad column " +
                                                   str(columnas_map[xcol])}
             col = -1
-            for key in self.model['fields']:
+            #for key in self.model['fields']:
+            for key in mapping:
                 col = col + 1
-                # if columnas_map > 1:
-                while column[col] not in self.model['map_sheet_model'].keys():
+                #while column[col] not in self.model['map_sheet_model'].keys():
+                while column[col] not in mapping.values():
                     x, col = i.pop(0), col + 1
 
-                if column[col] in self.model['map_sheet_model'].keys():
-                    if self.model['fields'][key] == 'datetime':
+                if column[col] in mapping.values():
+                    if str(fields[key]["type"]).lower().find('datetime')!=-1 or \
+                            str(fields[key]["type"]).lower().find('timestamp')!=-1:
                         if i:
                             try:
-                                format = self.model['formats']['datetime']
-                                strdate = SpanishMonthFormat(str(i.pop(0)), format)
-                                dictValor[key] = datetime.datetime. \
-                                    strptime(strdate, format)
+                                format = fields[key]["format"]
+                                val = str(i.pop(0))
+                                if val!='':
+                                    strdate = SpanishMonthFormat(val, format)
+                                    dictValor[key] = datetime.datetime. \
+                                        strptime(strdate, format)
+                                else:
+                                    dictValor[key] = None
 
                             except Exception as e:
                                 stre = str(e).replace("'", "").replace('"', '')
+                                print(str(e))
                                 return [], \
                                        {"State Api Response": "Fail,  "
                                                               "Contact "
@@ -162,14 +183,25 @@ class GSheet():
                         else:
                             dictValor[key] = None
 
-                    elif self.model['fields'][key] == 'json':
+                    elif str(fields[key]).lower().find('json') != -1:
                         dictValor[key] = escape(json.dumps(
                             {headers[j]: i[j] for j in range(len(i))}))
 
-                    elif self.model['fields'][key] == 'numeric':
+                    elif str(fields[key]["type"]).lower().find('numeric')!= -1 or \
+                            str(fields[key]["type"]).lower().find('money')!= -1:
                         if i:
                             valor = escape(i.pop(0))
-                            dictValor[key] = valor.replace(',', '').replace('%', '').replace('$', '').replace('Q', '')
+                            dictValor[key] = float(valor.replace(',', '').replace('%', '').replace('$', '').replace('Q', ''))
+                        else:
+                            dictValor[key] = None
+
+                    elif str(fields[key]["type"]).lower().find('int') != -1:
+                        if i:
+                            valor = escape(i.pop(0))
+                            if valor != '':
+                                dictValor[key] = int(valor.replace('.', '').replace('%', '').replace('$', '').replace('Q', ''))
+                            else:
+                                dictValor[key] = None
                         else:
                             dictValor[key] = None
                     else:
@@ -241,7 +273,7 @@ class GSheet():
                         .replace("%", '(porcentaje)')
                     return {"err": "store 005", "detail": valor}
 
-            try:  # inserting reconrds
+            try:  # inserting records
                 # trans = conn.begin()
                 fields = '('
                 settings['insert2'] = "("

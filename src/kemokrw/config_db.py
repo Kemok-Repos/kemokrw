@@ -87,6 +87,25 @@ COLUMN_CHECK = {
     "other": {
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     }
+  },
+  "pandas": {
+    "numeric": {
+      "check_sum": "sum",
+      "check_nn": "count"
+    },
+    "text": {
+      "check_nn": "count"
+    },
+    "datetime": {
+      "check_nn": "count;"
+    },
+    "boolean": {
+      "check_true": "count",
+      "check_nn": "count"
+    },
+    "other": {
+      "check_nn": "count"
+    }
   }
 }
 DB_COLLATION = {
