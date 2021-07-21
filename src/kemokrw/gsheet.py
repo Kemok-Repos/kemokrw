@@ -10,7 +10,6 @@ from googleapiclient.discovery import build
 from yaml import load, Loader
 import pprint
 
-
 class GSheet():
 
     def __init__(self, g_object, spreadsheet_id, sheet, scope, model):
@@ -99,6 +98,18 @@ class GSheet():
         values = result.get('values', [])
         return values
 
+    def read_countRow(self, range):
+        """Simple method to read from google and return as list of lists."""
+
+        vrange = range[:-1]
+        rows = self.ga_ss.values().\
+            get(spreadsheetId=self.spreadsheet_id, range=vrange).execute().get('values', [])
+
+        last_row = rows[-1] if rows else None
+        last_row_id = len(rows)
+        print(last_row_id, last_row)
+        return last_row_id
+
     def prepare(self, values, headers,  format='%d/%m/%Y %H:%M:%S'):
         """Prepare values to ensure those can be stored in DB with sqlalchemy."""
 
@@ -150,21 +161,19 @@ class GSheet():
                            {"State Api Response": "Error bad column " +
                                                   str(columnas_map[xcol])}
             col = -1
-            #for key in self.model['fields']:
             for key in mapping:
                 col = col + 1
-                #while column[col] not in self.model['map_sheet_model'].keys():
                 while column[col] not in mapping.values():
                     x, col = i.pop(0), col + 1
 
                 if column[col] in mapping.values():
-                    if str(fields[key]["type"]).lower().find('datetime')!=-1 or \
-                            str(fields[key]["type"]).lower().find('timestamp')!=-1:
+                    if str(fields[key]["type"]).lower().find('datetime') != -1 or \
+                            str(fields[key]["type"]).lower().find('timestamp') != -1:
                         if i:
                             try:
                                 format = fields[key]["format"]
                                 val = str(i.pop(0))
-                                if val!='':
+                                if val != '':
                                     strdate = SpanishMonthFormat(val, format)
                                     dictValor[key] = datetime.datetime. \
                                         strptime(strdate, format)
@@ -187,8 +196,8 @@ class GSheet():
                         dictValor[key] = escape(json.dumps(
                             {headers[j]: i[j] for j in range(len(i))}))
 
-                    elif str(fields[key]["type"]).lower().find('numeric')!= -1 or \
-                            str(fields[key]["type"]).lower().find('money')!= -1:
+                    elif str(fields[key]["type"]).lower().find('numeric') != -1 or \
+                            str(fields[key]["type"]).lower().find('money') != -1:
                         if i:
                             valor = escape(i.pop(0))
                             dictValor[key] = float(valor.replace(',', '').replace('%', '').replace('$', '').replace('Q', ''))

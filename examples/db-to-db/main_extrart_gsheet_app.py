@@ -1,4 +1,4 @@
-from kemokrw.extract_gsheet_v2 import *
+from kemokrw.extract_gsheet import *
 import yaml
 
 with open('ejemplo_extract_gsheet.yaml') as file:
@@ -17,5 +17,4 @@ gsheet = ExtractGSheet(spreadsheet_id=spreadsheet_id,
                        header=header,
                        model=model)
 k = gsheet.tranfer()
-
 

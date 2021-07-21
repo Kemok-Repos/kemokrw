@@ -27,7 +27,6 @@ COLUMN_TYPES = {
     "BIT"
   ]
 }
-
 TABLE_QUERY = "SELECT {columns} FROM {table} {condition} {order};"
 
 TABLE_QUERY_MAX = "WITH particion AS  " \

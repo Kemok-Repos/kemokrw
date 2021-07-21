@@ -75,7 +75,7 @@ class ExtractDB(Extract):
         pass
 
     def get_collation(self):
-        self.src_lc_monetary = get_db_collation(self.db,self.dbms,'lc_monetary')
+        self.src_lc_monetary = get_db_collation(self.db, self.dbms, 'lc_monetary')
 
     
     def get_metadata(self):

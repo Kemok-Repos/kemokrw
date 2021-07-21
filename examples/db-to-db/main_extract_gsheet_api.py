@@ -5,7 +5,7 @@
 
 
 from flask import Flask, jsonify, request
-from kemokrw.extract_gsheet_v2 import *
+from kemokrw.extract_gsheet import *
 from kemokrw.dblog import *
 import logging
 import json
