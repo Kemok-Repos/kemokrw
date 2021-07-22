@@ -1,0 +1,93 @@
+spreadsheet_id: "1ODUzm3WXzz9DItY0nXMkrqG0HLgtOLOi2BEtdCrkhIo"
+sheet: "facturadetalle"
+header: "a1:u1"
+db: "postgresql+psycopg2://postgres:maitreya1234@localhost:5433/srtendero"
+table: erp_gom_facturadetalle
+model:
+  col1:
+    name: idfacturadetalle
+    type: int4
+    map_sheet: a1
+  col2:
+    name: idfactura
+    type: int4
+    map_sheet: b1
+  col3:
+    name: idproductomedida
+    type: int4
+    map_sheet: c1
+  col4:
+    name: cantidadmedida
+    type: numeric(18,8)
+    map_sheet: d1
+  col5:
+    name: cantidad
+    type: numeric(18,8)
+    map_sheet: e1
+  col6:
+    name: cantidaddevuelta
+    type: numeric(18,8)
+    map_sheet: f1
+  col7:
+    name: costounitario
+    type: numeric(18,8)
+    map_sheet: g1
+  col8:
+    name: costoalterno
+    type: numeric(18,8)
+    map_sheet: h1
+  col9:
+    name: precioafectado
+    type: numeric(18,8)
+    map_sheet: i1
+  col10:
+    name: preciosugerido
+    type: numeric(18,8)
+    map_sheet: j1
+  col11:
+    name: montodescuento
+    type: money
+    map_sheet: k1
+  col12:
+    name: montoiva
+    type: money
+    map_sheet: l1
+  col13:
+    name: montosubtotal
+    type: money
+    map_sheet: m1
+  col14:
+    name: descripcion
+    type: varchar(255)
+    map_sheet: n1
+  col15:
+    name: usuarioingreso
+    type: varchar(25)
+    map_sheet: o1
+  col16:
+    name: fechaingreso
+    type: timestamp
+    map_sheet: p1
+    format: "%Y-%m-%d %H:%M:%S.%f"
+  col17:
+    name: timestamp
+    type: timestamp
+    map_sheet: q1
+    format: "%Y-%m-%d %H:%M:%S.%f"
+  col18:
+    name: idvendedor
+    type: int4
+    map_sheet: r1
+  col19:
+    name: montoexento
+    type: money
+    map_sheet: s1
+  col20:
+    name: condicionoferta
+    type: bit
+    map_sheet: t1
+  col21:
+    name: idproductoexento
+    type: init4
+    map_sheet: v1
+

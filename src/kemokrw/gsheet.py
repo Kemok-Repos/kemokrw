@@ -72,6 +72,7 @@ class GSheet():
         print('build...')
         service = build('sheets', 'v4', credentials=creds)
 
+
         if hasattr(service, self.g_object):
             self.ga_ss = getattr(service, self.g_object)()
         else:
@@ -318,30 +319,16 @@ class GSheet():
         else:
             return {"detail": "dont have data to save"}
 
-
         conn.close()
         return fail
 
-    def update_sheet(self, data):
-        self.gauth('sheets')
-        #spreadsheet_id = '1ODUzm3WXzz9DItY0nXMkrqG0HLgtOLOi2BEtdCrkhIo'  # TODO: Update placeholder value.
-        #spreadsheet_id = self.jsonconfig["spreadsheet_id"]
-        # The A1 notation of the values to update.
-        #range_ = 'primera!A1:E2'  # TODO: Update placeholder value.
+    def update_sheet(self, data, rango):
+        Body = {'values': json.loads(data.to_json(orient="values"))}
+        print(data.to_json(orient="values"))
 
-        #sheet_name = self.jsonconfig['sheet_name']
-        # How the input data should be interpreted.
-        value_input_option = 'RAW'  # TODO: Update placeholder value.
-        #values = [[500, 400, 300, 200, 100, ], [500, 400, 300, 200, 100, ], ]
-        Body = {'values': data, }
-        value_range_body = {}
         request = self.ga_ss.spreadsheets().values().update(spreadsheetId=self.spreadsheet_id,
-                                                            range=range,
-                                                            valueInputOption=value_input_option,
+                                                            range=rango,
+                                                            valueInputOption='RAW',
                                                             body=Body)
         response = request.execute()
-
-        # TODO: Change code below to process the `response` dict:
-        pprint(response)
-
 
