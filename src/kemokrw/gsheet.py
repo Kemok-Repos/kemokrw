@@ -200,7 +200,7 @@ class GSheet():
                     elif str(fields[key]["type"]).lower().find('numeric') != -1 or \
                             str(fields[key]["type"]).lower().find('money') != -1:
                         if i:
-                            valor = escape(i.pop(0))
+                            valor = escape(i.pop(0)).replace('Bs.', '')
                             dictValor[key] = float(valor.replace(',', '').replace('%', '').replace('$', '').replace('Q', ''))
                         else:
                             dictValor[key] = None
@@ -209,6 +209,7 @@ class GSheet():
                         if i:
                             valor = escape(i.pop(0))
                             if valor != '':
+                                valor = valor.replace('Bs.', '')
                                 dictValor[key] = int(valor.replace('.', '').replace('%', '').replace('$', '').replace('Q', ''))
                             else:
                                 dictValor[key] = None
