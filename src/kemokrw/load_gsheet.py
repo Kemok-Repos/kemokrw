@@ -4,7 +4,9 @@ from kemokrw.func_db import *
 import numpy as np
 
 class LoadGSheet(Load):
-    """"Clase LoadGSheet implementación de la clase Load.
+
+    """
+    Clase LoadGSheet implementación de la clase Load.
 
     Cumple la función de cargar información a una hoja de Google Sheets.
 
@@ -15,13 +17,15 @@ class LoadGSheet(Load):
     model : dict
     metadata : dict
 
-    Métodos
-    -------
+    Métodos:
     get_metadata():
         Obtiene la metadata de la tabla en Google Sheets.
+
     save_data():
         Almacena la data de un pandas.DataFrame Object una tabla en Google Sheets.
+
     """
+
     def __init__(self, spreadsheet_id, sheet, header, model, condition, order):
         self.spreadsheet_id = spreadsheet_id
         self.sheet = sheet

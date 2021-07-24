@@ -2,6 +2,7 @@ from kemokrw.extract import Extract
 from sqlalchemy import create_engine
 from kemokrw.func_db import get_db_metadata, model_format_check, get_db_collation
 import kemokrw.config_db as config
+from kredential.kredential import discover_credId, json_to_sqlalchemy, discover_full
 import pandas as pd
 
 
@@ -29,7 +30,7 @@ class ExtractDB(Extract):
         Obtiene la data de la tabla a extraer.
     """
 
-    def __init__(self, db, table, model, condition="", order="", key=""):
+    def __init__(self, db, table, model, condition="", order="", key="", id_passbolt=None):
         """Construye los atributos necesarios para la lectura de la información.
 
         Parametros
@@ -52,8 +53,15 @@ class ExtractDB(Extract):
             data : pandas.DataFrame Object
                 Data extraída.
         """
+
+        if id_passbolt:
+            cred = discover_credId(id_passbolt)
+            db = json_to_sqlalchemy(cred)
+            self.dbms = 'postgresql'
+        else:
+            self.dbms = db.split('+')[0]
+
         self.db = create_engine(db)
-        self.dbms = db.split('+')[0]
         self.table = table
         self.model = model
         self.condition = condition
@@ -72,7 +80,8 @@ class ExtractDB(Extract):
     @classmethod
     def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
         """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
-        pass
+        cred = discover_credId(passbolt_id)
+        return json_to_sqlalchemy(cred)
 
     def get_collation(self):
         self.src_lc_monetary = get_db_collation(self.db, self.dbms, 'lc_monetary')

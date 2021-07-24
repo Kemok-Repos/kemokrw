@@ -1,6 +1,7 @@
 from kemokrw.load import Load
 from sqlalchemy import create_engine
 from kemokrw.func_db import get_db_metadata, get_db_collation
+from kredential.kredential import discover_credId, json_to_sqlalchemy, discover_full
 
 
 
@@ -28,7 +29,7 @@ class LoadDB(Load):
         Almacena la data de un pandas.DataFrame Object en una base de datos.
     """
 
-    def __init__(self, db, table, model, condition="", order="", chunksize=10000, key="", src_lc_collation=""):
+    def __init__(self, db, table, model, condition="", order="", chunksize=10000, key="", src_lc_collation="", id_passbolt=None):
         """Construye los atributos necesarios para almacenar la información.
 
         Parametros
@@ -49,8 +50,14 @@ class LoadDB(Load):
                 Diccionario con el tipo (normalizado) y los chequeos realizados en cada columna para
                 determinar diferencias.
         """
+        if id_passbolt:
+            cred = discover_credId(id_passbolt)
+            db = json_to_sqlalchemy(cred)
+            self.dbms = 'postgresql'
+        else:
+            self.dbms = db.split('+')[0]
+
         self.db = create_engine(db)
-        self.dbms = db.split('+')[0]
         self.table = table
         self.model = model
         self.condition = condition
