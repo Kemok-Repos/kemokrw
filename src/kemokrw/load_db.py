@@ -76,7 +76,8 @@ class LoadDB(Load):
     @classmethod
     def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
         """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
-        pass
+        cred = discover_credId(passbolt_id)
+        return json_to_sqlalchemy(cred)
         
 
     def get_metadata(self):

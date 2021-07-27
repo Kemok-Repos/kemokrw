@@ -68,6 +68,7 @@ def DbConections(dbcode):
 
     return dbConection[dbcode]
 
+
 def ValidJsonConfig(jsonconfig,milog):
     keys = ["microservice_id", "api_type", "spreadsheet_id", "sheet_name",
             "header_cells", "data_cells", "model_name", "model",
@@ -263,8 +264,6 @@ def selector_microservice():
 
 if __name__ == '__main__':
 
-    #dbloger = ConectLog('debug')
-    #dbloger = ConectLog('production')
     dbloger = ConectLog(app.config["Ambiente"])
     milog = None
     try:
