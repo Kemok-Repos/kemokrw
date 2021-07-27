@@ -49,7 +49,7 @@ class DbKeyTransfer():
         # propuesta de implementación DbKeyTransfer basada en basictranfer.
         # UML: https://lucid.app/lucidchart/5c4d839e-6ec6-450d-988a-7eb71a48c264/edit?beaconFlowId=7200D524CFEBC447&page=P2mReXmc01Ko#
 
-    def __init__(self, src_config, dst_config, key, max_transfer=0,nSubPartition=4):
+    def __init__(self, src_config, dst_config, key, max_transfer=0,nSubPartition = 2):
         self.max_tranfer = max_transfer
         self.nSubPartition = nSubPartition
         # Unidad medida bloque lectura panda
@@ -115,78 +115,26 @@ class DbKeyTransfer():
 
 
     def TranferPartitions(self, Key, condition, total_Tp, tp):
-        a1 = datetime.datetime.now()
-        print(str(datetime.datetime.now()) + ' Calculating Sub Table partitions..')
-        query = config.TABLE_QUERY.format(columns=self.key,
-                                          table=self.src_config['table'],
-                                          condition=condition,
-                                          order="order by " + self.key)
-
-        db = DbClient(uuid.uuid1().hex, self.src_config["db"])
-        tuplaKey = db.ejecutar(query,'fetchall')
-        #print(tuplaKey)
-        longitud = len(tuplaKey)
-        elementos = longitud // self.nSubPartition
-        k, valor_old, indice, ExtractCondition = 0, 0, 0, {}
-        b1 = datetime.datetime.now()
-        tiempo= b1 - a1
-        seg_tspIndex = tiempo.total_seconds()
-        print(str(datetime.datetime.now()) + ' Procesed Time Elapsed: ' +
-              str(round(seg_tspIndex, 4)) + 'seg')
-        # Creación de suparticiones a mayor cantidad de particiones
-        for indice in range(0, longitud - elementos, elementos):
-            k += 1
-            idKeyoffset, idKeylimit = tuplaKey[indice][0], \
-                                      tuplaKey[indice + elementos - 1][0]
-
-            ExtractCondition[str(k)] = 'where {} >= {} and  {} <= {}'.\
-                format(Key, idKeyoffset, Key, idKeylimit)
-
-            print(str(datetime.datetime.now()) +
-                  ' Sub Table partition {}--- {}'.format(k, ExtractCondition[str(k)]))
-
-        if indice < longitud:
-            ExtractCondition[str(k + 1)] = 'where {} >= {} and  {} <= {}'.\
-                format(Key,tuplaKey[indice + elementos][0],
-                       Key, tuplaKey[longitud - 1][0])
-
-            print(str(datetime.datetime.now()) +
-                  ' Sub Table partition {}--- {}'.
-                  format(k + 1, ExtractCondition[str(k + 1)]))
-
-        print('Sub partitions Calculated.. Processing')
-        del tuplaKey
+        a = datetime.datetime.now()
+        src = ExtractDB(self.src_config["db"], self.src_config["table"],
+                        self.src_config["model"], order="",
+                        condition=condition, key=Key,
+                        id_passbolt='eaef93b8-5016-46a6-9c80-5b254b68e09a')
 
 
-        for indice in ExtractCondition:
-            a = datetime.datetime.now()
-            stri = 'Processing Sub table partition {} --- {}' .\
-                format(indice, ExtractCondition[str(indice)])
+        dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
+                     self.dst_config["model"], order="",
+                     condition=condition,
+                     key=Key, src_lc_collation=src.src_lc_monetary)
 
-            print(stri)
-            src = ExtractDB(self.src_config["db"], self.src_config["table"],
-                            self.src_config["model"], order="",
-                            condition=ExtractCondition[str(indice)], key=Key,
-                            id_passbolt='eaef93b8-5016-46a6-9c80-5b254b68e09a')
+        trf = BasicTransfer(src, dst)
+        trf.transfer(4)
+        del trf
+        del src
+        del dst
 
-
-            dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
-                         self.dst_config["model"], order="",
-                         condition=ExtractCondition[str(indice)],
-                         key=Key, src_lc_collation=src.src_lc_monetary)
-
-
-            trf = BasicTransfer(src, dst)
-            trf.transfer(4)
-            del trf
-            del src
-            del dst
-            tsp = len(ExtractCondition)
-            b = datetime.datetime.now()
-            tiempo , seg = b - a, tiempo.total_seconds()
-            print(str(datetime.datetime.now()) + ' Processed Time Elapsed: ' +
-                  str(round(seg, 4)) + 'seg')
-
-            #calculo de tiempo estimado de tranferencia    ---- REV -----
-            #t_estimado = (total_tp - tp) * (tsp - int(indice)) * (seg + seg_tspIndex) / 60
-            #print(str(datetime.datetime.now()) + ' Time Estimated: ' + str(round(t_estimado, 4)) + ' Min')
+        b = datetime.datetime.now()
+        tiempo = b - a
+        seg = tiempo.total_seconds()
+        print(str(datetime.datetime.now()) + ' Processed Time Elapsed: ' +
+              str(round(seg, 4)) + 'seg')
