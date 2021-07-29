@@ -120,16 +120,195 @@ HUBSTAFF = {
     "activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/activities",
         "key": "activities",
-        "model": {}
+        "model": {
+            'col1': {
+                'name': 'id',
+                'type': 'int32'
+            },
+            'col2': {
+                'name': 'date',
+                'type': 'datetime64'
+            },
+            'col3': {
+                'name': 'created_at',
+                'type': 'datetime64'
+            },
+            'col4': {
+                'name': 'updated_at',
+                'type': 'datetime64'
+            },
+            'col5': {
+                'name': 'time_slot',
+                'type': 'str'
+            },
+            'col6': {
+                'name': 'starts_at',
+                'type': 'str'
+            },
+            'col7': {
+                'name': 'user_id',
+                'type': 'numeric'
+            },
+            'col8': {
+                'name': 'project_id',
+                'type': 'numeric'
+            },
+            'col9': {
+                'name': 'task_id',
+                'type': 'numeric'
+            },
+            'col10': {
+                'name': 'keyboard',
+                'type': 'numeric'
+            },
+            'col11': {
+                'name': 'mouse',
+                'type': 'numeric'
+            },
+            'col12': {
+                'name': 'overall',
+                'type': 'numeric'
+            },
+            'col13': {
+                'name': 'tracked',
+                'type': 'numeric'
+            },
+            'col14': {
+                'name': 'billable',
+                'type': 'boolean'
+            },
+            'col15': {
+                'name': 'paid',
+                'type': 'boolean'
+            },
+            'col16': {
+                'name': 'client_invoiced',
+                'type': 'boolean'
+            },
+            'col17': {
+                'name': 'team_invoiced',
+                'type': 'boolean'
+            },
+            'col18': {
+                'name': 'immutable',
+                'type': 'boolean'
+            },
+            'col19': {
+                'name': 'timesheet_id',
+                'type': 'numeric'
+            },
+            'col20': {
+                'name': 'timesheet_locked',
+                'type': 'boolean'
+            },
+            'col21': {
+                'name': 'time_type',
+                'type': 'str'
+            },
+            'col22': {
+                'name': 'client',
+                'type': 'str'
+            }
+        }
     },
     "aplication_activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/application_activities",
         "key": "applications",
-        "model": {}
+        "model": {
+            'col1': {
+                'name': 'id',
+                'type': 'int32'
+            },
+            'col2': {
+                'name': 'name',
+                'type': 'str'
+            },
+            'col3': {
+                'name': 'date',
+                'type': 'datetime64'
+            },
+            'col4': {
+                'name': 'created_at',
+                'type': 'datetime64'
+            },
+            'col5': {
+                'name': 'updated_at',
+                'type': 'datetime64'
+            },
+            'col6': {
+                'name': 'time_slot',
+                'type': 'str'
+            },
+            'col7': {
+                'name': 'user_id',
+                'type': 'numeric'
+            },
+            'col8': {
+                'name': 'project_id',
+                'type': 'numeric'
+            },
+            'col9': {
+                'name': 'task_id',
+                'type': 'numeric'
+            },
+            'col10': {
+                'name': 'tracked',
+                'type': 'numeric'
+            },
+            'col11': {
+                'name': 'activations',
+                'type': 'numeric'
+            }
+        }
     },
     "url_activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/url_activities",
         "key": "urls",
-        "model": {}
+        "model": {
+            'col1': {
+                'name': 'id',
+                'type': 'int32'
+            },
+            'col2': {
+                'name': 'site',
+                'type': 'str'
+            },
+            'col3': {
+                'name': 'date',
+                'type': 'datetime64'
+            },
+            'col4': {
+                'name': 'created_at',
+                'type': 'datetime64'
+            },
+            'col5': {
+                'name': 'updated_at',
+                'type': 'datetime64'
+            },
+            'col6': {
+                'name': 'time_slot',
+                'type': 'str'
+            },
+            'col7': {
+                'name': 'user_id',
+                'type': 'numeric'
+            },
+            'col8': {
+                'name': 'project_id',
+                'type': 'numeric'
+            },
+            'col9': {
+                'name': 'task_id',
+                'type': 'numeric'
+            },
+            'col10': {
+                'name': 'tracked',
+                'type': 'numeric'
+            },
+            'col11': {
+                'name': 'details',
+                'type': 'str'
+            }
+        }
     }
 }

@@ -14,7 +14,10 @@ COLUMN_TYPES = {
     "VARCHAR",
     "CHARACTER VARYING",
     "TEXT",
-    "STRING"
+    "STRING",
+    "JSON",
+    "JSONB",
+    "TEXT[]"
   ],
   "datetime": [
     "DATETIME",
