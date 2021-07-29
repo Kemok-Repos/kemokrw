@@ -27,6 +27,7 @@ setuptools.setup(
         'pandas>=1.1.5',
         'psycopg2-binary>=2.8.6',
         'pymssql>=2.2.1',
-        'SQLAlchemy>=1.3.24'
+        'SQLAlchemy>=1.3.24',
+        'requests>=2.25.1'
     ]
 )
