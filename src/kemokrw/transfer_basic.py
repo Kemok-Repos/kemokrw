@@ -75,7 +75,8 @@ class BasicTransfer(Transfer):
         # Revisa que cada tipo de columna sea igual entre pares
         for i in self.src.metadata["columns"]:
             if self.src.metadata["columns"][i]["type"] != self.dst.metadata["columns"][i]["type"]:
-                raise Exception('No compatibility found. {} type do not match.'.format(1))
+                raise Exception('No compatibility found. {0} type do not match {1}.'.format(
+                    self.src.metadata["columns"][i]["type"], self.dst.metadata["columns"][i]["type"]))
 
         verification = True
         # Revisa el número de filas en cada extremo
