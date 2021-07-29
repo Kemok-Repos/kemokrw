@@ -2,7 +2,12 @@ COLUMN_TYPES = {
   "numeric": [
     "INT",
     "INTEGER",
-    "NUMERIC"
+    "NUMERIC",
+    "BIGINT",
+    "SMALLINT",
+    "DOUBLE PRECISION",
+    "FLOAT"
+
   ],
   "text": [
     "CHAR",
@@ -78,4 +83,9 @@ COLUMN_CHECK = {
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     }
   }
+}
+
+MODEL_QUERY = {
+  "postgresql": "SELECT ordinal_position, column_name, data_type FROM information_schema.columns WHERE table_name = '{0}' {1};",
+  "mssql": "SELECT ordinal_position, column_name, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{0}' {1};"
 }
