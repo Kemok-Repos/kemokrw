@@ -49,17 +49,20 @@ class DbKeyTransfer():
         # propuesta de implementación DbKeyTransfer basada en basictranfer.
         # UML: https://lucid.app/lucidchart/5c4d839e-6ec6-450d-988a-7eb71a48c264/edit?beaconFlowId=7200D524CFEBC447&page=P2mReXmc01Ko#
 
-    def __init__(self, src_config, dst_config, key, max_transfer=0,nSubPartition = 2):
+    def __init__(self, src_config, dst_config, key, max_transfer=0,Multiprocessing=False):
         self.max_tranfer = max_transfer
-        self.nSubPartition = nSubPartition
         # Unidad medida bloque lectura panda
         self.pack = 1000000
         self.src_config = src_config
         self.dst_config = dst_config
         self.key = key
 
+        #multiprocessing option
+        self.multiprocessing = Multiprocessing
 
-    def tranfer(self):
+    def tranfer(self,workerPar=None):
+
+        self.workerPar = workerPar
         a = datetime.datetime.now()
         f = open('registro_tiempo.log', 'w')
 
@@ -92,26 +95,28 @@ class DbKeyTransfer():
                 print(str(datetime.datetime.now()) + ' Table partition {} --- {}'.
                       format(indice - 1, condition[str(indice)]))
 
-        condition[str(indice)].replace('<', '<=')
+        condition[str(indice)] = condition[str(indice)].replace('<', '<=')
         del db
         if condition == {}:
             self.TranferPartitions(Key=self.key, condition="")
         else:
             total_tp = len(condition)
-            for i in condition:
-                stri = str(datetime.datetime.now()) + \
-                       ' Procesing table Partition  No. {} --- {} '.\
-                           format(int(i) - 1, condition[i])
+            for k, i in enumerate(condition):
+                if ((((k+1) % 2)==0 and self.workerPar) or (((k) % 2)==0 and not self.workerPar)) or\
+                        not self.multiprocessing:
+                    stri = str(datetime.datetime.now()) + \
+                           ' Procesing table Partition  No. {} --- {} '.\
+                               format(int(i) - 1, condition[i])
 
-                # registrolog(f, str(datetime.datetime.now()) + stri)
-                print(stri)
-                self.TranferPartitions(Key=self.key, condition=condition[i],
-                                       total_Tp=total_tp, tp=int(i) - 1)
+                    # registrolog(f, str(datetime.datetime.now()) + stri)
+                    print(stri)
+                    self.TranferPartitions(Key=self.key, condition=condition[i],
+                                           total_Tp=total_tp, tp=int(i) - 1)
 
-                b = datetime.datetime.now()
-                tiempo = b - a
-                print(str(datetime.datetime.now()) + ' Total Time Elapsed: ' + str(
-                    round(tiempo.total_seconds(), 4)) + 'seg')
+                    b = datetime.datetime.now()
+                    tiempo = b - a
+                    print(str(datetime.datetime.now()) + ' Total Time Elapsed: ' + str(
+                        round(tiempo.total_seconds(), 4)) + 'seg')
 
 
     def TranferPartitions(self, Key, condition, total_Tp, tp):

@@ -21,8 +21,8 @@ if __name__ == "__main__":
     dst = LoadDB(dst_config['db'], dst_config['table'], dst_config['model'])
     print(dst.metadata)
 
-    src.get_data()
-    print(src.data)
+    #src.get_data()
+    #print(src.data)
 
 
     # Crear objeto de transferencia
