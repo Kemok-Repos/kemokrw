@@ -2,6 +2,9 @@ from kemokrw.extract import Extract
 import kemokrw.config_api as config
 import pandas as pd
 from datetime import datetime, date, timezone
+import re
+import json
+import ast
 
 
 class ExtractHubstaff(Extract):
@@ -74,21 +77,28 @@ class ExtractHubstaff(Extract):
 
     def get_data(self):
         """Genera un Dataframe con la respuesta de la API"""
+        self.data = None
         url = self.url.format(**self.url_params)
+        request_params = self.params
         if self.endpoint_type == 'by_id':
             data = []
             for i in self.id_list:
-                response = self.client.get(url.format(id=i), params=self.params)
+                response = self.client.get(url.format(id=i), params=request_params)
                 data.append(response[self.response_key])
             self.data = pd.DataFrame(data)
         elif self.endpoint_type == 'by_organization':
             while True:
-                response = self.client.get(url, params=self.params)
+                response = self.client.get(url, params=request_params)
+                #print(self.params)
                 page = pd.DataFrame(response[self.response_key])
                 self.data = pd.concat([self.data, page])
                 if 'pagination' not in response.keys():
                     break
-                self.params['page_start_id'] = response['pagination']['next_page_start_id']
+                print(self.params)
+                new_page = response['pagination']['next_page_start_id']
+                request_params['page_start_id'] = new_page
+
+                print(self.params)
 
         if self.model == dict():
             print(self.data.head())
@@ -110,6 +120,30 @@ class ExtractHubstaff(Extract):
                 self.data[i] = pd.to_datetime(self.data[i])
             elif self.model[i]['type'] == 'numeric':
                 self.data[i] = pd.to_numeric(self.data[i])
+            elif self.model[i]['type'] == 'str':
+                self.data = self.data.astype({i: 'str'})
+                self.data[i] = self.data[i].apply(clean_str)
+            elif self.model[i]['type'] == 'dict':
+                self.data = self.data.astype({i: 'str'})
+                self.data[i] = self.data[i].apply(clean_json)
             else:
                 self.data = self.data.astype({i: self.model[i]['type']})
+        self.data.reset_index(drop=True, inplace=True)
 
+
+def clean_str(x):
+    if x.lower() in ['nan', 'null', '']:
+        return None
+    else:
+        return x
+
+
+def clean_json(x):
+    if x.lower() in ['nan', 'null']:
+        return None
+    else:
+        x = re.sub(r"'(\s*[:,{}])", r'"\1', x)
+        x = re.sub(r"([:,\{\}]\s*)'", r'\1"', x)
+        x = ast.literal_eval(x)
+        x = json.dumps(x)
+        return x

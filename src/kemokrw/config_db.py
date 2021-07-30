@@ -15,8 +15,6 @@ COLUMN_TYPES = {
     "CHARACTER VARYING",
     "TEXT",
     "STRING",
-    "JSON",
-    "JSONB",
     "TEXT[]"
   ],
   "datetime": [
@@ -31,7 +29,9 @@ COLUMN_TYPES = {
     "BOOLEAN"
   ],
   "other": [
-    "BIT"
+    "BIT",
+    "JSON",
+    "JSONB"
   ]
 }
 

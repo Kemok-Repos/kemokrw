@@ -24,7 +24,8 @@ COLUMN_TYPES = {
     "BOOLEAN"
   ],
   "other": [
-    "BIT"
+    "BIT",
+    "DICT"
   ]
 }
 
@@ -77,7 +78,7 @@ HUBSTAFF = {
         "model": {
             'col1': {
                 'name': 'id',
-                'type': 'int32'
+                'type': 'numeric'
             },
             'col2': {
                 'name': 'name',
@@ -109,11 +110,11 @@ HUBSTAFF = {
             },
             'col9': {
                 'name': 'budget',
-                'type': 'str'
+                'type': 'dict'
             },
             'col10': {
                 'name': 'metadata',
-                'type': 'str'
+                'type': 'dict'
             }
         }
     },

@@ -53,6 +53,7 @@ class HubstaffClient(ApiClient):
         self.organization_id = None
         self.filepath = path
         self.headers = None
+        self.backup_token = refresh_token
 
         # Verifica si existe un archivo con credenciales, de lo contrario genera uno con el Persona Access Token
         try:
@@ -108,6 +109,10 @@ class HubstaffClient(ApiClient):
                     time.sleep(10)
                     exception = Exception('GET '+url + ' code ' + str(response.status_code)+' : '+response.text)
                     counter += 1
+                    if response.status_code == 401:
+                        self.refresh_token = self.backup_token
+                        self.refresh()
+                        exception = 0
             except requests.exceptions.RequestException as e:
                 time.sleep(10)
                 exception = e

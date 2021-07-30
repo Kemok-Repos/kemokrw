@@ -114,9 +114,11 @@ class LoadDB(Load):
         connection.execute("DELETE FROM {0} {1}".format(self.table, self.condition))
         names = []
 
+
+        column_names = dict()
         for i in self.model:
-            names.append(self.model[i]["name"])
-        data.columns = names
+            column_names[i] = self.model[i]['name']
+        data.rename(column_names, axis=1, inplace=True)
         data.to_sql(name=self.table, con=connection, if_exists='append', index=False,
                     chunksize=self.chunksize)
         connection.close()
