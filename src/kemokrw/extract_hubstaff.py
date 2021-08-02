@@ -16,6 +16,7 @@ class ExtractHubstaff(Extract):
         self.endpoint_type = endpoint_type
         self.response_key = response_key
         self.params = params
+        self.backup_params = params
         self.id_list = id_list
         self.url_params = {'organization_id': str(self.client.organization_id), 'id': '{id}'}
         #
@@ -79,7 +80,9 @@ class ExtractHubstaff(Extract):
         """Genera un Dataframe con la respuesta de la API"""
         self.data = None
         url = self.url.format(**self.url_params)
+        self.params = self.backup_params
         request_params = self.params
+        #print(self.params)
         if self.endpoint_type == 'by_id':
             data = []
             for i in self.id_list:
@@ -88,17 +91,15 @@ class ExtractHubstaff(Extract):
             self.data = pd.DataFrame(data)
         elif self.endpoint_type == 'by_organization':
             while True:
+                print(request_params)
                 response = self.client.get(url, params=request_params)
-                #print(self.params)
+                print(response)
                 page = pd.DataFrame(response[self.response_key])
                 self.data = pd.concat([self.data, page])
                 if 'pagination' not in response.keys():
                     break
-                print(self.params)
-                new_page = response['pagination']['next_page_start_id']
-                request_params['page_start_id'] = new_page
-
-                print(self.params)
+                request_params['page_start_id'] = response['pagination']['next_page_start_id']
+                #print(self.params)
 
         if self.model == dict():
             print(self.data.head())

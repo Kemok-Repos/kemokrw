@@ -33,6 +33,7 @@ if __name__ == '__main__':
 
     src_activities = ExtractHubstaff.get_template(client, endpoint='activities', params={"date": "2021-07-29"})
     print(len(src_activities.data))
+    print(src_activities.params)
     src_activities.get_data()
     #src_activities.data.to_csv('ejemplo.csv')
     #dst_activities = LoadDB.query_model(DB, 'hs_activities')

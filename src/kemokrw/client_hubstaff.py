@@ -47,28 +47,27 @@ class HubstaffClient(ApiClient):
                 Estructura de headers para realizar llamadas a la API.
         """
         self.access_token = None
-        self.refresh_token = None
-        self.expiration = None
+        self.refresh_token = refresh_token
+        self.expiration = datetime.utcnow()
         self.organization = organization
         self.organization_id = None
         self.filepath = path
         self.headers = None
-        self.backup_token = refresh_token
 
         # Verifica si existe un archivo con credenciales, de lo contrario genera uno con el Persona Access Token
         try:
             file = open(path, "r")
             credentials = json.loads(file.read())
             self.access_token = credentials['access_token']
-            self.refresh_token = credentials['refresh_token']
             self.expiration = datetime.fromisoformat(credentials['expiration'])
             self.headers = {'Accept': 'application/json', 'Authorization': 'Bearer ' + self.access_token}
+            if credentials['refresh_token'] is not None and self.expiration < (datetime.utcnow()-timedelta(seconds=2)):
+                self.refresh_token = credentials['refresh_token']
         except FileNotFoundError:
             print('No se encuentra el archivo de configuración. Intentando obtener nuevo acceso.')
             if refresh_token is None:
                 raise Exception('No se puede inicializar el cliente por falta de un refresh token válido.')
-            self.refresh_token = refresh_token
-            self.refresh()
+        self.refresh()
 
         # Obtiene el token de la organizacion
         response = self.get(config.HUBSTAFF['organizations']['base_url'])
@@ -79,9 +78,8 @@ class HubstaffClient(ApiClient):
 
     def refresh(self):
         """Genera un access_token a partir del refresh_token"""
-        if self.expiration is not None and self.access_token is not None:
-            if self.expiration > datetime.utcnow():
-                print('Access Token aun es valido.')
+        if self.expiration > datetime.utcnow() and self.access_token is not None:
+            print('Access Token aun es valido.')
         else:
             self.headers = None
             response = self.get('https://account.hubstaff.com/.well-known/openid-configuration')
@@ -109,10 +107,6 @@ class HubstaffClient(ApiClient):
                     time.sleep(10)
                     exception = Exception('GET '+url + ' code ' + str(response.status_code)+' : '+response.text)
                     counter += 1
-                    if response.status_code == 401:
-                        self.refresh_token = self.backup_token
-                        self.refresh()
-                        exception = 0
             except requests.exceptions.RequestException as e:
                 time.sleep(10)
                 exception = e
