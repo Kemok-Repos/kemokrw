@@ -1,6 +1,6 @@
 from kemokrw.extract import Extract
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, DatabaseError
 from kemokrw.func_db import get_db_metadata, model_format_check
 import kemokrw.config_db as config
 import pandas as pd
@@ -86,7 +86,12 @@ class ExtractDB(Extract):
                 break
             except OperationalError as err:
                 attempts += 1
-                print(err)
+                if attempts == 3:
+                    raise err
+            except DatabaseError as err:
+                attempts += 1
+                if attempts == 3:
+                    raise err
 
         data.sort_values(['ordinal_position'], ascending=True, ignore_index=True, inplace=True)
 
@@ -116,6 +121,18 @@ class ExtractDB(Extract):
 
         query = config.TABLE_QUERY.format(columns=columns, table=self.table,
                                           condition=self.condition, order=self.order)
-        connection = self.db.connect()
-        self.data = pd.read_sql(sql=query, con=connection)
-        connection.close()
+        attempts = 0
+        while attempts < 3:
+            try:
+                connection = self.db.connect()
+                self.data = pd.read_sql(sql=query, con=connection)
+                connection.close()
+                break
+            except OperationalError as err:
+                attempts += 1
+                if attempts == 3:
+                    raise err
+            except DatabaseError as err:
+                attempts += 1
+                if attempts == 3:
+                    raise err

@@ -31,7 +31,7 @@ COLUMN_TYPES = {
 
 HUBSTAFF = {
     "by_id": ["users"],
-    "by_organization": ["projects", "activities", "aplication_activities", "url_activities"],
+    "by_organization": ["projects", "activities", "application_activities", "url_activities"],
     "by_project": [],
     "users": {
         "base_url": "https://api.hubstaff.com/v2/users/{id}",
@@ -140,11 +140,11 @@ HUBSTAFF = {
             },
             'col5': {
                 'name': 'time_slot',
-                'type': 'str'
+                'type': 'datetime64'
             },
             'col6': {
                 'name': 'starts_at',
-                'type': 'str'
+                'type': 'datetime64'
             },
             'col7': {
                 'name': 'user_id',
@@ -212,7 +212,7 @@ HUBSTAFF = {
             }
         }
     },
-    "aplication_activities": {
+    "application_activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/application_activities",
         "key": "applications",
         "model": {
@@ -238,7 +238,7 @@ HUBSTAFF = {
             },
             'col6': {
                 'name': 'time_slot',
-                'type': 'str'
+                'type': 'datetime64'
             },
             'col7': {
                 'name': 'user_id',
@@ -288,7 +288,7 @@ HUBSTAFF = {
             },
             'col6': {
                 'name': 'time_slot',
-                'type': 'str'
+                'type': 'datetime64'
             },
             'col7': {
                 'name': 'user_id',
@@ -299,14 +299,10 @@ HUBSTAFF = {
                 'type': 'numeric'
             },
             'col9': {
-                'name': 'task_id',
-                'type': 'numeric'
-            },
-            'col10': {
                 'name': 'tracked',
                 'type': 'numeric'
             },
-            'col11': {
+            'col10': {
                 'name': 'details',
                 'type': 'str'
             }

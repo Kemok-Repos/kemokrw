@@ -114,14 +114,11 @@ class BasicTransfer(Transfer):
 
         total_tries = 1+retries
         n_try = 1
-        print(len(self.src.data))
         self.src.get_data()
-        print(len(self.src.data))
         while n_try <= total_tries and not self.verification:
-            print("Transferring data. Try {0} out of {1}".format(n_try, total_tries))
-            print(len(self.src.data))
+            if n_try > 1:
+                print("Transferring data. Try {0} out of {1}".format(n_try, total_tries))
             self.dst.save_data(self.src.data)
-            print(len(self.src.data))
             self.verify()
             n_try += 1
 

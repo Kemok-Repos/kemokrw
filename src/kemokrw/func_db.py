@@ -1,4 +1,5 @@
 from re import match
+from sqlalchemy.exc import OperationalError, DatabaseError
 import kemokrw.config_db as config
 
 
@@ -10,15 +11,27 @@ def model_format_check(model):
 
 def execute_srquery(conn, query):
     """Ejecuta un query con un resultario unitario"""
-    result = conn.execute(query)
-    for i in result:
-        return i[0]
+    attempts = 0
+    while attempts < 3:
+        try:
+            result = conn.execute(query)
+            for i in result:
+                return i[0]
+            break
+        except OperationalError as err:
+            attempts += 1
+            if attempts == 3:
+                raise err
+        except DatabaseError as err:
+            attempts += 1
+            if attempts == 3:
+                raise err
 
 
 def get_db_metadata(conn, dbms, model, table, condition):
     # Incluir manejo de errores para verificar conexión a base de datos 3 veces
     connection = conn
-    connection.execute("SELECT 1;")
+    execute_srquery(connection, "SELECT 1;")
 
     metadata = dict()
     metadata["ncols"] = len(model)

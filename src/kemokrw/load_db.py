@@ -1,6 +1,6 @@
 from kemokrw.load import Load
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, DatabaseError
 from kemokrw.func_db import get_db_metadata
 import kemokrw.config_db as config
 import pandas as pd
@@ -82,7 +82,12 @@ class LoadDB(Load):
                 break
             except OperationalError as err:
                 attempts += 1
-                print(err)
+                if attempts == 3:
+                    raise err
+            except DatabaseError as err:
+                attempts += 1
+                if attempts == 3:
+                    raise err
 
         data.sort_values(['ordinal_position'], ascending=True, ignore_index=True, inplace=True)
 
@@ -110,18 +115,28 @@ class LoadDB(Load):
             data : pandas.DataFrame Object
                 Objeto con la información por almacenar
         """
-        connection = self.db.connect()
-        connection.execute("DELETE FROM {0} {1}".format(self.table, self.condition))
-        names = []
-
-
         column_names = dict()
         for i in self.model:
             column_names[i] = self.model[i]['name']
         data.rename(column_names, axis=1, inplace=True)
-        data.to_sql(name=self.table, con=connection, if_exists='append', index=False,
-                    chunksize=self.chunksize)
-        connection.close()
+
+        attempts = 0
+        while attempts < 3:
+            try:
+                connection = self.db.connect()
+                connection.execute("DELETE FROM {0} {1}".format(self.table, self.condition))
+                data.to_sql(name=self.table, con=connection, if_exists='append', index=False,
+                            chunksize=self.chunksize)
+                connection.close()
+                break
+            except OperationalError as err:
+                attempts += 1
+                if attempts == 3:
+                    raise err
+            except DatabaseError as err:
+                attempts += 1
+                if attempts == 3:
+                    raise err
 
     @staticmethod
     def built_connection_string(login, password, host, port, schema):
