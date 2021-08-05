@@ -11,8 +11,9 @@ if __name__ == "__main__":
     # Cargar configuración ejemplo de una base de datos de destino
     with open('ejemplo_destino.yaml') as file:
         dst_config = yaml.load(file, Loader=yaml.FullLoader)
+
     # Para utilizar multiprocessing pasar True al constructor.
-    trf = DbKeyTransfer(src_config, dst_config, 'idfacturadetalle', 0, Multiprocessing=True)
+    trf = DbKeyTransfer(src_config, dst_config, src_config['key_column'], 0, Multiprocessing=True)
     with Pool(2) as p:
         #(verificar varios parametros)
         Params = [True, False]

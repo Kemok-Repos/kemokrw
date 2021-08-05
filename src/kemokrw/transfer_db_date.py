@@ -1,7 +1,15 @@
 from kemokrw.transfer import Transfer
+from kemokrw.extract_db import ExtractDB
+from kemokrw.load_db import LoadDB
+from kemokrw.transfer_basic import BasicTransfer
+from kemokrw.dbclient import *
+import datetime
+import kemokrw.config_db as config
+import uuid
 
 
-class DbDateTransfer(Transfer):
+
+class DbDateTransfer():
     """Clase DbDateTransfer implementación de la clase Transfer.
 
     La clase se encarga de transferir y asegurar información de base de datos a base de datos
@@ -52,4 +60,101 @@ class DbDateTransfer(Transfer):
     transfer(retires=0, max_tranfer=1000):
         Tranfiere los datos de la fuente a el destino.
     """
-    pass
+
+    def __init__(self, src_config, dst_config,  max_transfer=0, Multiprocessing=False):
+        self.max_tranfer = max_transfer
+        # Unidad medida bloque lectura panda
+        self.pack = 1000000
+        self.src_config = src_config
+        self.dst_config = dst_config
+        self.date_column = self.src_config['date_column']
+        self.key_column = self.src_config['key_column']
+        self.workerPar = None
+        #multiprocessing option
+        self.multiprocessing = Multiprocessing
+        self.current_year = str(datetime.datetime.now().year)
+        self.current_month = datetime.datetime.now().month
+        self.current_month = '0'+ str(self.current_month) if self.current_month < 10 else str(self.current_month)
+        self.current_day = datetime.datetime.now().day
+        self.current_day = '0'+ str(self.current_day) if self.current_day < 10 else str(self.current_day)
+
+
+    def tranfer(self,workerPar=None, years_old=False, months_old=False, days_old=False, partitionDate=None):
+        self.workerPar = workerPar
+        a = datetime.datetime.now()
+
+        # años anteriores segmenta por año
+        patern = ''
+        if partitionDate =='years_old':
+            oper_year = "<"
+            query = config.TABLE_DATE_YEAR.format(table=self.src_config['table'],
+                                                  key=self.date_column,
+                                                  oper=oper_year,
+                                                  year=self.current_year)
+            patern = 'YYYY'
+
+                # meses  anteriores segmenta por mes
+        elif partitionDate =='months_old':
+            oper_month, patern = "<", 'YYYY-MM'
+            query = config.TABLE_DATE_MONTH.format(table=self.src_config['table'],
+                                                   key=self.date_column,
+                                                   oper=oper_month,
+                                                   year=self.current_year,
+                                                   patern=patern,
+                                                   month=self.current_month)
+
+        # mes actual segmente por dia
+        elif partitionDate == 'month':
+            oper_month, patern = "<", 'YYYY-MM-DD'
+            # test.......... 07
+            self.current_month='07'
+            query = config.TABLE_DATE_MONTH.format(table=self.src_config['table'],
+                                                   key=self.date_column,
+                                                   oper=oper_month,
+                                                   year=self.current_year,
+                                                   patern=patern,
+                                                   month=self.current_month)
+        else:
+            raise Exception("fill partitionDate, "
+                            "implemented to years_old, months_old and month")
+
+        # creating partitions
+        db = DbClient(uuid.uuid1().hex, self.src_config["db"])
+        part = str(db.ejecutar(query)[0]).split(',')
+        condicion = []
+        for i, k in enumerate(part):
+           a = datetime.datetime.now()
+           condicion.append(" where TO_CHAR({},'{}')='{}'".format(self.date_column, patern, k))
+           print(condicion[i])
+           self.TranferPartitions(Key=self.key_column, condition=condicion[i])
+           b = datetime.datetime.now()
+           tiempo = b - a
+           print(str(datetime.datetime.now()) + ' Total Time Elapsed: ' + str(
+                round(tiempo.total_seconds(), 4)) + 'seg')
+
+
+    def TranferPartitions(self, Key, condition, total_Tp=None, tp=None):
+        a = datetime.datetime.now()
+        src = ExtractDB(self.src_config["db"], self.src_config["table"],
+                        self.src_config["model"], order="",
+                        condition=condition, key=Key,
+                        id_passbolt=self.src_config['id_passbolt'])
+
+
+        dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
+                     self.dst_config["model"], order="",
+                     condition=condition,
+                     key=Key, src_lc_collation=src.src_lc_monetary)
+
+        trf = BasicTransfer(src, dst)
+        trf.transfer(4)
+        del trf
+        del src
+        del dst
+
+        b = datetime.datetime.now()
+        tiempo = b - a
+        seg = tiempo.total_seconds()
+        print(str(datetime.datetime.now()) + ' Processed Time Elapsed: ' +
+              str(round(seg, 4)) + 'seg')
+

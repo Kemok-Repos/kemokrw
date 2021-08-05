@@ -35,6 +35,12 @@ TABLE_QUERY_MAX = "WITH particion AS  " \
                   "select max(valor)" \
                   "from particion;"
 
+TABLE_DATE_YEAR = "SELECT string_agg(distinct TO_CHAR({key},'YYYY'),',') as years " \
+                   "FROM {table} WHERE TO_CHAR({key},'YYYY') {oper} '{year}';"
+
+TABLE_DATE_MONTH = "SELECT string_agg(distinct TO_CHAR({key},'{patern}'),',') as months " \
+                   "FROM {table} WHERE TO_CHAR({key},'YYYY')='{year}' and TO_CHAR({key},'MM') {oper} '{month};'"
+
 TABLE_CHECK = {
   "check_rows": "SELECT COUNT(*) FROM {table} {condition};"
 }

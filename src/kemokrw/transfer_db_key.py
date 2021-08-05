@@ -49,13 +49,13 @@ class DbKeyTransfer():
         # propuesta de implementación DbKeyTransfer basada en basictranfer.
         # UML: https://lucid.app/lucidchart/5c4d839e-6ec6-450d-988a-7eb71a48c264/edit?beaconFlowId=7200D524CFEBC447&page=P2mReXmc01Ko#
 
-    def __init__(self, src_config, dst_config, key, max_transfer=0,Multiprocessing=False):
+    def __init__(self, src_config, dst_config, key, max_transfer=0, Multiprocessing=False):
         self.max_tranfer = max_transfer
         # Unidad medida bloque lectura panda
         self.pack = 1000000
         self.src_config = src_config
         self.dst_config = dst_config
-        self.key = key
+        self.key_column = key
 
         #multiprocessing option
         self.multiprocessing = Multiprocessing
@@ -81,14 +81,14 @@ class DbKeyTransfer():
             for i in range(0, longitud, self.pack):
                 indice += 1
                 query = config.TABLE_QUERY_MAX.format(table=self.src_config['table'],
-                                                      key=self.key,
+                                                      key=self.key_column,
                                                       offset=str(i),
                                                       limit=str(self.pack))
                 valor = db.ejecutar(query)
                 valor = valor[0]
                 if valor != valor_old:
                     condition[str(indice)] = 'where {} >= {} and {} <{}'.\
-                        format(self.key, valor_old, self.key, valor)
+                        format(self.key_column, valor_old, self.key_column, valor)
                 else:
                     break
                 valor_old = valor
@@ -98,7 +98,7 @@ class DbKeyTransfer():
         condition[str(indice)] = condition[str(indice)].replace('<', '<=')
         del db
         if condition == {}:
-            self.TranferPartitions(Key=self.key, condition="")
+            self.TranferPartitions(Key=self.key_column, condition="")
         else:
             total_tp = len(condition)
             for k, i in enumerate(condition):
@@ -110,7 +110,7 @@ class DbKeyTransfer():
 
                     # registrolog(f, str(datetime.datetime.now()) + stri)
                     print(stri)
-                    self.TranferPartitions(Key=self.key, condition=condition[i],
+                    self.TranferPartitions(Key=self.key_column, condition=condition[i],
                                            total_Tp=total_tp, tp=int(i) - 1)
 
                     b = datetime.datetime.now()
