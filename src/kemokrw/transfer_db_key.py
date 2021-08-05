@@ -1,18 +1,15 @@
-from kemokrw.transfer import Transfer
 from kemokrw.extract_db import ExtractDB
 from kemokrw.load_db import LoadDB
 from kemokrw.transfer_basic import BasicTransfer
-from  kemokrw.dbclient import *
-import pandas as pd
-import yaml
+from kemokrw.dbclient import *
 import datetime
 import kemokrw.config_db as config
 import uuid
 
-from sqlalchemy import create_engine
 
-def registrolog(f,msg):
+def registrolog(f, msg):
     f.write(msg)
+
 
 class DbKeyTransfer():
     # documentacion inicial.
@@ -73,10 +70,10 @@ class DbKeyTransfer():
         condition = {}
         print(str(datetime.datetime.now()) + ' Calculating Table partitions..')
         # particionado de tabla limitacion estructural PANDA
+        indice = 1
         if longitud > 1500000:
             # limite de manejo de pandas 2M
             IdKeys = {}
-            indice = 1
             valor_old = 0
             for i in range(0, longitud, self.pack):
                 indice += 1
@@ -98,19 +95,19 @@ class DbKeyTransfer():
         condition[str(indice)] = condition[str(indice)].replace('<', '<=')
         del db
         if condition == {}:
-            self.TranferPartitions(Key=self.key_column, condition="")
+            self.TranferPartitions(key=self.key_column, condition="")
         else:
             total_tp = len(condition)
             for k, i in enumerate(condition):
                 if ((((k+1) % 2)==0 and self.workerPar) or (((k) % 2)==0 and not self.workerPar)) or\
                         not self.multiprocessing:
                     stri = str(datetime.datetime.now()) + \
-                           ' Procesing table Partition  No. {} --- {} '.\
-                               format(int(i) - 1, condition[i])
+                           'Processing table Partition  No. {} --- {} '\
+                               .format(int(i) - 1, condition[i])
 
                     # registrolog(f, str(datetime.datetime.now()) + stri)
                     print(stri)
-                    self.TranferPartitions(Key=self.key_column, condition=condition[i],
+                    self.TranferPartitions(key=self.key_column, condition=condition[i],
                                            total_Tp=total_tp, tp=int(i) - 1)
 
                     b = datetime.datetime.now()
@@ -119,18 +116,17 @@ class DbKeyTransfer():
                         round(tiempo.total_seconds(), 4)) + 'seg')
 
 
-    def TranferPartitions(self, Key, condition, total_Tp, tp):
+    def TranferPartitions(self, key, condition, total_Tp, tp):
         a = datetime.datetime.now()
         src = ExtractDB(self.src_config["db"], self.src_config["table"],
                         self.src_config["model"], order="",
-                        condition=condition, key=Key,
+                        condition=condition, key=key,
                         id_passbolt='eaef93b8-5016-46a6-9c80-5b254b68e09a')
-
 
         dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
                      self.dst_config["model"], order="",
                      condition=condition,
-                     key=Key, src_lc_collation=src.src_lc_monetary)
+                     key=key, src_lc_collation=src.src_lc_monetary)
 
         trf = BasicTransfer(src, dst)
         trf.transfer(4)
