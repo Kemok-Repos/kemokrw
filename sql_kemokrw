@@ -1,0 +1,47 @@
+SELECT idubicacion, idbodega, nombre, peso, volumen, condicionfactura, usuarioingreso, fechaingreso, "timestamp", descripcion, estado
+FROM public.erp_gom_ubicacion
+order by idubicacion
+
+
+SELECT min(idubicacion)
+FROM public.erp_gom_ubicacion
+order by idubicacion
+
+SELECT max(idubicacion)
+FROM public.erp_gom_ubicacion
+order by idubicacion
+
+ejemplo 1
+
+-- mitad inferior
+SELECT idubicacion, idbodega, nombre, peso, volumen, condicionfactura, usuarioingreso, fechaingreso, "timestamp", descripcion, estado
+FROM public.erp_gom_ubicacion
+order by idubicacion
+offset 0
+LIMIT (SELECT count(*) FROM public.erp_gom_ubicacion)/2
+
+-- mitad superior
+SELECT idubicacion, idbodega, nombre, peso, volumen, condicionfactura, usuarioingreso, fechaingreso, "timestamp", descripcion, estado
+FROM public.erp_gom_ubicacion
+order by idubicacion
+offset (SELECT count(*) FROM public.erp_gom_ubicacion)/2
+
+ejemplo 2
+SELECT idfacturadetalle
+FROM public.erp_gom_facturadetalle
+order by 1 
+offset 0
+LIMIT (SELECT count(*) FROM public.erp_gom_facturadetalle)/2 + 1
+
+
+SELECT idfacturadetalle
+FROM public.erp_gom_facturadetalle
+order by 1 
+offset  (SELECT count(*) FROM public.erp_gom_facturadetalle)/2
+
+
+forma python
+select {id} from {table} order by 1 desc offset {offset} limit {limit} 
+
+
+

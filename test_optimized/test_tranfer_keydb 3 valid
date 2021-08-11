@@ -1,0 +1,41 @@
+2021-07-29 15:12:24.060257 Calculating Table partitions..
+2021-07-29 15:12:25.294886 Table partition 1 --- where idfacturadetalle >= 0 and idfacturadetalle <1126547
+2021-07-29 15:12:26.622435 Table partition 2 --- where idfacturadetalle >= 1126547 and idfacturadetalle <7204505
+2021-07-29 15:12:28.042008 Table partition 3 --- where idfacturadetalle >= 7204505 and idfacturadetalle <8244011
+2021-07-29 15:12:29.664445 Table partition 4 --- where idfacturadetalle >= 8244011 and idfacturadetalle <9283361
+2021-07-29 15:12:31.380130 Table partition 5 --- where idfacturadetalle >= 9283361 and idfacturadetalle <10343259
+2021-07-29 15:12:33.286077 Table partition 6 --- where idfacturadetalle >= 10343259 and idfacturadetalle <11379250
+2021-07-29 15:12:35.285503 Table partition 7 --- where idfacturadetalle >= 11379250 and idfacturadetalle <12416182
+2021-07-29 15:12:38.751177 Table partition 8 --- where idfacturadetalle >= 12416182 and idfacturadetalle <13157376
+2021-07-29 15:12:38.751286 Procesing table Partition  No. 1 --- where idfacturadetalle >= 0 and idfacturadetalle <1126547 
+Transfer successful.
+2021-07-29 15:21:31.531990 Processed Time Elapsed: 532.7806seg
+2021-07-29 15:21:31.532063 Total Time Elapsed: 549.3461seg
+2021-07-29 15:21:31.532081 Procesing table Partition  No. 2 --- where idfacturadetalle >= 1126547 and idfacturadetalle <7204505 
+Transfer successful.
+2021-07-29 15:30:19.282644 Processed Time Elapsed: 527.7505seg
+2021-07-29 15:30:19.282725 Total Time Elapsed: 1077.0968seg
+2021-07-29 15:30:19.282760 Procesing table Partition  No. 3 --- where idfacturadetalle >= 7204505 and idfacturadetalle <8244011 
+Transfer successful.
+2021-07-29 15:40:57.536874 Processed Time Elapsed: 638.254seg
+2021-07-29 15:40:57.536968 Total Time Elapsed: 1715.351seg
+2021-07-29 15:40:57.537006 Procesing table Partition  No. 4 --- where idfacturadetalle >= 8244011 and idfacturadetalle <9283361 
+Transfer successful.
+2021-07-29 15:53:18.812658 Processed Time Elapsed: 741.2756seg
+2021-07-29 15:53:18.812736 Total Time Elapsed: 2456.6268seg
+2021-07-29 15:53:18.812761 Procesing table Partition  No. 5 --- where idfacturadetalle >= 9283361 and idfacturadetalle <10343259 
+Transfer successful.
+2021-07-29 16:01:45.678843 Processed Time Elapsed: 506.866seg
+2021-07-29 16:01:45.678925 Total Time Elapsed: 2963.493seg
+2021-07-29 16:01:45.678943 Procesing table Partition  No. 6 --- where idfacturadetalle >= 10343259 and idfacturadetalle <11379250 
+Transfer successful.
+2021-07-29 16:09:47.883150 Processed Time Elapsed: 482.2042seg
+2021-07-29 16:09:47.883232 Total Time Elapsed: 3445.6973seg
+2021-07-29 16:09:47.883260 Procesing table Partition  No. 7 --- where idfacturadetalle >= 11379250 and idfacturadetalle <12416182 
+Transfer successful.
+2021-07-29 16:16:59.786929 Processed Time Elapsed: 431.9036seg
+2021-07-29 16:16:59.786999 Total Time Elapsed: 3877.6011seg
+2021-07-29 16:16:59.787018 Procesing table Partition  No. 8 --- where idfacturadetalle >= 12416182 and idfacturadetalle <=13157376 
+Transfer successful.
+2021-07-29 16:20:57.480165 Processed Time Elapsed: 237.6931seg
+2021-07-29 16:20:57.480246 Total Time Elapsed: 4115.2943seg

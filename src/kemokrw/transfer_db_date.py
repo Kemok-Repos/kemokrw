@@ -80,7 +80,7 @@ class DbDateTransfer():
         self.current_day = datetime.datetime.now().day
         self.current_day = '0' + str(self.current_day) if self.current_day < 10 else str(self.current_day)
 
-    def tranfer(self, workerPar=None, years_old=False, months_old=False, days_old=False, partitionDate=None):
+    def tranfer(self, workerPar=None,  partitionDate=None):
         self.workerPar = workerPar
         a = datetime.datetime.now()
 
@@ -143,7 +143,6 @@ class DbDateTransfer():
 
             else:
                 raise Exception ('falla de formato')
-
 
             # condicion.append(" where TO_CHAR({},'{}')='{}'".format(self.date_column, patern, k))
             print(condicion[i])
