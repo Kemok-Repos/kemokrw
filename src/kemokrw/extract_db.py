@@ -30,7 +30,7 @@ class ExtractDB(Extract):
         Obtiene la data de la tabla a extraer.
     """
 
-    def __init__(self, db, table, model, condition="", order="", key="", id_passbolt=None):
+    def __init__(self, db, table, model, condition="", order="", key="", id_passbolt=None, config_passbolt=''):
         """Construye los atributos necesarios para la lectura de la información.
 
         Parametros
@@ -55,7 +55,7 @@ class ExtractDB(Extract):
         """
 
         if id_passbolt:
-            cred = discover_credId(id_passbolt)
+            cred = discover_credId(id_passbolt, config_passbolt)
             db = json_to_sqlalchemy(cred)
             self.dbms = 'postgresql'
         else:

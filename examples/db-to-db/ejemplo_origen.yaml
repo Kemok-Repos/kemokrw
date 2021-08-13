@@ -1,5 +1,6 @@
 db: postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118:5432/srtendero
 id_passbolt : ef93b8-5016-46a6-9c80-5b254b68e09a
+config_passbolt : /home/fmarquez/KEMOK/kemokrw/kredential/src/kredential/
 table: erp_gom_facturadetalle
 key_column: idfacturadetalle
 date_column : fechaingreso

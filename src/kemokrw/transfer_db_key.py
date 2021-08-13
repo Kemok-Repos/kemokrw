@@ -121,7 +121,8 @@ class DbKeyTransfer():
         src = ExtractDB(self.src_config["db"], self.src_config["table"],
                         self.src_config["model"], order="",
                         condition=condition, key=key,
-                        id_passbolt='eaef93b8-5016-46a6-9c80-5b254b68e09a')
+                        id_passbolt='eaef93b8-5016-46a6-9c80-5b254b68e09a',
+                        config_passbolt=self.src_config["config_passbolt"])
 
         dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
                      self.dst_config["model"], order="",

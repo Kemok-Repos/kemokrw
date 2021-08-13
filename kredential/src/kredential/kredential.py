@@ -1,6 +1,7 @@
 import passboltapi
 import os
 
+
 def get_passbolt(passbolt_obj, full=None, resource=None, idresource=None):
     # implemnet passbolt api
     result = list()
@@ -40,25 +41,26 @@ def get_passbolt(passbolt_obj, full=None, resource=None, idresource=None):
         return resources
 
 
-def discover_credResource(resource):
+def discover_credResource(resource, path_config):
     # # return user password credential by name resource in json format
-    fileConfig = os.path.dirname(os.path.abspath(__file__)) +'/config.ini'
+    fileConfig = path_config +'config.ini'
     with passboltapi.PassboltAPI(config_path=fileConfig) \
             as passbolt:
         return get_passbolt(passbolt_obj=passbolt, resource=resource)
 
 
-def discover_credId(idresource):
+def discover_credId(idresource, path_config):
     # return user password credential by idresource in json format
-    fileConfig = os.path.dirname(os.path.abspath(__file__)) +'/config.ini'
+    #fileConfig = os.path.dirname(os.path.abspath(__file__)) +'/config.ini'
+    fileConfig = path_config +'config.ini'
     with passboltapi.PassboltAPI(config_path=fileConfig) \
             as passbolt:
         return get_passbolt(passbolt_obj=passbolt, idresource=idresource)
 
 
-def discover_full():
+def discover_full(path_config):
     # return all user passbolt credential in json format
-    fileConfig = os.path.dirname(os.path.abspath(__file__)) +'/config.ini'
+    fileConfig = path_config +'config.ini'
     with passboltapi.PassboltAPI(config_path=fileConfig) \
             as passbolt:
         return get_passbolt(passbolt_obj=passbolt, full=True)
