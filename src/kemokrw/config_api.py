@@ -2,7 +2,8 @@ COLUMN_TYPES = {
   "numeric": [
     "INT",
     "INTEGER",
-    "NUMERIC"
+    "NUMERIC",
+    "FLOAT"
   ],
   "text": [
     "CHAR",
@@ -37,34 +38,13 @@ HUBSTAFF = {
         "base_url": "https://api.hubstaff.com/v2/users/{id}",
         "key": "user",
         "model": {
-            'col1': {
-                'name': 'id',
-                'type': 'int32'
-                },
-            'col2': {
-                'name': 'name',
-                'type': 'str'
-                },
-            'col3': {
-                'name': 'email',
-                'type': 'str'
-                },
-            'col4': {
-                'name': 'time_zone',
-                'type': 'str'
-            },
-            'col5': {
-                'name': 'status',
-                'type': 'str'
-            },
-            'col6': {
-                'name': 'created_at',
-                'type': 'datetime64'
-            },
-            'col7': {
-                'name': 'updated_at',
-                'type': 'datetime64'
-            }
+            'col1': {'name': 'id', 'type': 'int32' },
+            'col2': {'name': 'name', 'type': 'str'},
+            'col3': {'name': 'email', 'type': 'str'},
+            'col4': {'name': 'time_zone', 'type': 'str'},
+            'col5': {'name': 'status', 'type': 'str'},
+            'col6': {'name': 'created_at', 'type': 'datetime64'},
+            'col7': {'name': 'updated_at', 'type': 'datetime64'}
         }
     },
     "organizations": {
@@ -76,236 +56,431 @@ HUBSTAFF = {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/projects",
         "key": "projects",
         "model": {
-            'col1': {
-                'name': 'id',
-                'type': 'numeric'
-            },
-            'col2': {
-                'name': 'name',
-                'type': 'str'
-            },
-            'col3': {
-                'name': 'description',
-                'type': 'str'
-            },
-            'col4': {
-                'name': 'created_at',
-                'type': 'datetime64'
-            },
-            'col5': {
-                'name': 'updated_at',
-                'type': 'datetime64'
-            },
-            'col6': {
-                'name': 'status',
-                'type': 'str'
-            },
-            'col7': {
-                'name': 'client_id',
-                'type': 'numeric'
-            },
-            'col8': {
-                'name': 'billable',
-                'type': 'boolean'
-            },
-            'col9': {
-                'name': 'budget',
-                'type': 'dict'
-            },
-            'col10': {
-                'name': 'metadata',
-                'type': 'dict'
-            }
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'name', 'type': 'str'},
+            'col3': {'name': 'description', 'type': 'str'},
+            'col4': {'name': 'created_at', 'type': 'datetime64'},
+            'col5': {'name': 'updated_at', 'type': 'datetime64'},
+            'col6': {'name': 'status', 'type': 'str'},
+            'col7': {'name': 'client_id', 'type': 'numeric'},
+            'col8': {'name': 'billable', 'type': 'boolean'},
+            'col9': {'name': 'budget', 'type': 'dict'},
+            'col10': {'name': 'metadata', 'type': 'dict'}
         }
     },
     "activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/activities",
         "key": "activities",
         "model": {
-            'col1': {
-                'name': 'id',
-                'type': 'int32'
-            },
-            'col2': {
-                'name': 'date',
-                'type': 'datetime64'
-            },
-            'col3': {
-                'name': 'created_at',
-                'type': 'datetime64'
-            },
-            'col4': {
-                'name': 'updated_at',
-                'type': 'datetime64'
-            },
-            'col5': {
-                'name': 'time_slot',
-                'type': 'datetime64'
-            },
-            'col6': {
-                'name': 'starts_at',
-                'type': 'datetime64'
-            },
-            'col7': {
-                'name': 'user_id',
-                'type': 'numeric'
-            },
-            'col8': {
-                'name': 'project_id',
-                'type': 'numeric'
-            },
-            'col9': {
-                'name': 'task_id',
-                'type': 'numeric'
-            },
-            'col10': {
-                'name': 'keyboard',
-                'type': 'numeric'
-            },
-            'col11': {
-                'name': 'mouse',
-                'type': 'numeric'
-            },
-            'col12': {
-                'name': 'overall',
-                'type': 'numeric'
-            },
-            'col13': {
-                'name': 'tracked',
-                'type': 'numeric'
-            },
-            'col14': {
-                'name': 'billable',
-                'type': 'boolean'
-            },
-            'col15': {
-                'name': 'paid',
-                'type': 'boolean'
-            },
-            'col16': {
-                'name': 'client_invoiced',
-                'type': 'boolean'
-            },
-            'col17': {
-                'name': 'team_invoiced',
-                'type': 'boolean'
-            },
-            'col18': {
-                'name': 'immutable',
-                'type': 'boolean'
-            },
-            'col19': {
-                'name': 'timesheet_id',
-                'type': 'numeric'
-            },
-            'col20': {
-                'name': 'timesheet_locked',
-                'type': 'boolean'
-            },
-            'col21': {
-                'name': 'time_type',
-                'type': 'str'
-            },
-            'col22': {
-                'name': 'client',
-                'type': 'str'
-            }
+            'col1': {'name': 'id', 'type': 'int32'},
+            'col2': {'name': 'date','type': 'datetime64'},
+            'col3': {'name': 'created_at','type': 'datetime64'},
+            'col4': {'name': 'updated_at','type': 'datetime64'},
+            'col5': {'name': 'time_slot','type': 'datetime64'},
+            'col6': {'name': 'starts_at','type': 'datetime64'},
+            'col7': {'name': 'user_id','type': 'numeric'},
+            'col8': {'name': 'project_id','type': 'numeric'},
+            'col9': {'name': 'task_id','type': 'numeric'},
+            'col10': {'name': 'keyboard','type': 'numeric'},
+            'col11': {'name': 'mouse','type': 'numeric'},
+            'col12': {'name': 'overall','type': 'numeric'},
+            'col13': {'name': 'tracked','type': 'numeric'},
+            'col14': {'name': 'billable','type': 'boolean'},
+            'col15': {'name': 'paid','type': 'boolean'},
+            'col16': {'name': 'client_invoiced','type': 'boolean'},
+            'col17': {'name': 'team_invoiced','type': 'boolean'},
+            'col18': {'name': 'immutable','type': 'boolean'},
+            'col19': {'name': 'timesheet_id','type': 'numeric'},
+            'col20': {'name': 'timesheet_locked','type': 'boolean'},
+            'col21': {'name': 'time_type','type': 'str'},
+            'col22': {'name': 'client','type': 'str'}
         }
     },
     "application_activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/application_activities",
         "key": "applications",
         "model": {
-            'col1': {
-                'name': 'id',
-                'type': 'int32'
-            },
-            'col2': {
-                'name': 'name',
-                'type': 'str'
-            },
-            'col3': {
-                'name': 'date',
-                'type': 'datetime64'
-            },
-            'col4': {
-                'name': 'created_at',
-                'type': 'datetime64'
-            },
-            'col5': {
-                'name': 'updated_at',
-                'type': 'datetime64'
-            },
-            'col6': {
-                'name': 'time_slot',
-                'type': 'datetime64'
-            },
-            'col7': {
-                'name': 'user_id',
-                'type': 'numeric'
-            },
-            'col8': {
-                'name': 'project_id',
-                'type': 'numeric'
-            },
-            'col9': {
-                'name': 'task_id',
-                'type': 'numeric'
-            },
-            'col10': {
-                'name': 'tracked',
-                'type': 'numeric'
-            },
-            'col11': {
-                'name': 'activations',
-                'type': 'numeric'
-            }
+            'col1': {'name': 'id','type': 'int32'},
+            'col2': {'name': 'name','type': 'str'},
+            'col3': {'name': 'date','type': 'datetime64'},
+            'col4': {'name': 'created_at','type': 'datetime64'},
+            'col5': {'name': 'updated_at','type': 'datetime64'},
+            'col6': {'name': 'time_slot','type': 'datetime64'},
+            'col7': {'name': 'user_id','type': 'numeric'},
+            'col8': {'name': 'project_id','type': 'numeric'},
+            'col9': {'name': 'task_id','type': 'numeric'},
+            'col10': {'name': 'tracked','type': 'numeric'},
+            'col11': {'name': 'activations','type': 'numeric'}
         }
     },
     "url_activities": {
         "base_url": "https://api.hubstaff.com/v2/organizations/{organization_id}/url_activities",
         "key": "urls",
         "model": {
-            'col1': {
-                'name': 'id',
-                'type': 'int32'
-            },
-            'col2': {
-                'name': 'site',
-                'type': 'str'
-            },
-            'col3': {
-                'name': 'date',
-                'type': 'datetime64'
-            },
-            'col4': {
-                'name': 'created_at',
-                'type': 'datetime64'
-            },
-            'col5': {
-                'name': 'updated_at',
-                'type': 'datetime64'
-            },
-            'col6': {
-                'name': 'time_slot',
-                'type': 'datetime64'
-            },
-            'col7': {
-                'name': 'user_id',
-                'type': 'numeric'
-            },
-            'col8': {
-                'name': 'project_id',
-                'type': 'numeric'
-            },
-            'col9': {
-                'name': 'tracked',
-                'type': 'numeric'
-            },
-            'col10': {
-                'name': 'details',
-                'type': 'str'
-            }
+            'col1': {'name': 'id','type': 'int32'},
+            'col2': {'name': 'site','type': 'str'},
+            'col3': {'name': 'date','type': 'datetime64'},
+            'col4': {'name': 'created_at','type': 'datetime64'},
+            'col5': {'name': 'updated_at','type': 'datetime64'},
+            'col6': {'name': 'time_slot','type': 'datetime64'},
+            'col7': {'name': 'user_id','type': 'numeric'},
+            'col8': {'name': 'project_id','type': 'numeric'},
+            'col9': {'name': 'tracked','type': 'numeric'},
+            'col10': {'name': 'details','type': 'str'}
+        }
+    }
+}
+
+TEAMWORK = {
+    "by_id": [],
+    "all": ["projects", "projectcategories", "milestones", "tasklists", "tasks", "people"],
+    "projects": {
+        "base_url": "https://kemok.teamwork.com/projects.json",
+        "key": "projects",
+        "model": {
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'name', 'type': 'str'},
+            'col3': {'name': 'description', 'type': 'str'},
+            'col4': {'name': 'startDate', 'type': 'datetime64'},
+            'col5': {'name': 'boardData', 'type': 'dict'},
+            'col6': {'name': 'category', 'type': 'dict'},
+            'col7': {'name': 'company', 'type': 'dict'},
+            'col8': {'name': 'created-on', 'type': 'datetime64'},
+            'col9': {'name': 'defaultPrivacy', 'type': 'str'},
+            'col10': {'name': 'defaults', 'type': 'dict'},
+            'col11': {'name': 'endDate', 'type': 'datetime64'},
+            'col12': {'name': 'filesAutoNewVersion', 'type': 'bool'},
+            'col13': {'name': 'harvest-timers-enabled', 'type': 'bool'},
+            'col14': {'name': 'integrations', 'type': 'dict'},
+            'col15': {'name': 'isOnBoardingProject', 'type': 'bool'},
+            'col16': {'name': 'isProjectAdmin', 'type': 'bool'},
+            'col17': {'name': 'isSampleProject', 'type': 'bool'},
+            'col18': {'name': 'last-changed-on', 'type': 'datetime64'},
+            'col19': {'name': 'lastWorkedOn', 'type': 'datetime64'},
+            'col20': {'name': 'logo', 'type': 'str'},
+            'col21': {'name': 'logoFromCompany', 'type': 'str'},
+            'col22': {'name': 'notifyeveryone', 'type': 'bool'},
+            'col23': {'name': 'overview-start-page', 'type': 'str'},
+            'col24': {'name': 'portfolioBoards', 'type': 'str'},
+            'col25': {'name': 'privacyEnabled', 'type': 'bool'},
+            'col26': {'name': 'replyByEmailEnabled', 'type': 'bool'},
+            'col27': {'name': 'show-announcement', 'type': 'bool'},
+            'col28': {'name': 'starred', 'type': 'bool'},
+            'col29': {'name': 'start-page', 'type': 'str'},
+            'col30': {'name': 'status', 'type': 'str'},
+            'col31': {'name': 'subStatus', 'type': 'str'},
+            'col32': {'name': 'tags', 'type': 'str'},
+            'col33': {'name': 'tasks-start-page', 'type': 'str'},
+            'col34': {'name': 'completedByUserFirstName', 'type': 'str'},
+            'col35': {'name': 'completedByUserId', 'type': 'str'},
+            'col36': {'name': 'completedByUserLastName', 'type': 'str'},
+            'col37': {'name': 'completedOn', 'type': 'str'}
+        }
+    },
+    "projectcategories": {
+        "base_url": "https://kemok.teamwork.com/projectCategories.json",
+        "key": "categories",
+        "model": {
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'name', 'type': 'str'},
+            'col3': {'name': 'type', 'type': 'str'},
+            'col4': {'name': 'parent-id', 'type': 'str'},
+            'col5': {'name': 'color', 'type': 'str'},
+            'col6': {'name': 'count', 'type': 'str'},
+            'col7': {'name': 'elements-count', 'type': 'str'}
+        }
+    },
+    "milestones": {
+        "base_url": "https://kemok.teamwork.com/milestones.json",
+        "key": "milestones",
+        "model": {
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'title', 'type': 'str'},
+            'col3': {'name': 'description', 'type': 'str'},
+            'col4': {'name': 'status', 'type': 'str'},
+            'col5': {'name': 'completed', 'type': 'bool'},
+            'col6': {'name': 'tasklists', 'type': 'str'},
+            'col7': {'name': 'project-id', 'type': 'str'},
+            'col8': {'name': 'project-name', 'type': 'str'},
+            'col9': {'name': 'responsible-party-id', 'type': 'str'},
+            'col10': {'name': 'responsible-party-firstname', 'type': 'str'},
+            'col11': {'name': 'responsible-party-lastname', 'type': 'str'},
+            'col12': {'name': 'responsiblePartyIds', 'type': 'str'},
+            'col13': {'name': 'responsiblePartyNames', 'type': 'str'},
+            'col14': {'name': 'responsiblePartyFullNames', 'type': 'str'},
+            'col15': {'name': 'creator-id', 'type': 'str'},
+            'col16': {'name': 'userFollowingComments', 'type': 'bool'},
+            'col17': {'name': 'commentFollowerIds', 'type': 'str'},
+            'col18': {'name': 'dueDateOffset', 'type': 'str'},
+            'col19': {'name': 'company-id', 'type': 'str'},
+            'col20': {'name': 'company-name', 'type': 'str'},
+            'col21': {'name': 'canEdit', 'type': 'bool'},
+            'col22': {'name': 'isprivate', 'type': 'str'},
+            'col23': {'name': 'comments-count', 'type': 'str'},
+            'col24': {'name': 'responsible-party-type', 'type': 'str'},
+            'col25': {'name': 'canComplete', 'type': 'bool'},
+            'col26': {'name': 'private', 'type': 'bool'},
+            'col27': {'name': 'deadline', 'type': 'str'},
+            'col28': {'name': 'userFollowingChanges', 'type': 'bool'},
+            'col29': {'name': 'responsible-party-ids', 'type': 'str'},
+            'col30': {'name': 'tags', 'type': 'str'},
+            'col31': {'name': 'completer-firstname', 'type': 'str'},
+            'col32': {'name': 'completer-lastname', 'type': 'str'},
+            'col33': {'name': 'completer-id', 'type': 'str'},
+            'col34': {'name': 'completed-on', 'type': 'datetime64'},
+            'col35': {'name': 'changeFollowerIds', 'type': 'str'},
+            'col36': {'name': 'last-changed-on', 'type': 'str'},
+            'col37': {'name': 'created-on', 'type': 'datetime64'},
+            'col38': {'name': 'reminder', 'type': 'str'}
+        }
+    },
+    "tasklists": {
+        "base_url": "https://kemok.teamwork.com/tasklists.json",
+        "key": "tasklists",
+        "model": {
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'name', 'type': 'str'},
+            'col3': {'name': 'description', 'type': 'str'},
+            'col4': {'name': 'position', 'type': 'int64'},
+            'col5': {'name': 'projectId', 'type': 'str'},
+            'col6': {'name': 'projectName', 'type': 'str'},
+            'col7': {'name': 'lastUpdated', 'type': 'datetime64'},
+            'col8': {'name': 'private', 'type': 'bool'},
+            'col9': {'name': 'isTemplate', 'type': 'bool'},
+            'col10': {'name': 'tags', 'type': 'str'},
+            'col11': {'name': 'tasks', 'type': 'str'},
+            'col12': {'name': 'milestone-id', 'type': 'str'},
+            'col13': {'name': 'pinned', 'type': 'bool'},
+            'col14': {'name': 'complete', 'type': 'bool'},
+            'col15': {'name': 'uncompleted-count', 'type': 'int64'},
+            'col16': {'name': 'status', 'type': 'str'},
+            'col17': {'name': 'notifyTaskAssignee', 'type': 'bool'}
+        }
+    },
+    "tasks": {
+        "base_url": "https://kemok.teamwork.com/tasks.json",
+        "key": "todo-items",
+        "model": {
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'canComplete', 'type': 'bool'},
+            'col3': {'name': 'comments-count', 'type': 'int64'},
+            'col4': {'name': 'description', 'type': 'str'},
+            'col5': {'name': 'has-reminders', 'type': 'bool'},
+            'col6': {'name': 'has-unread-comments', 'type': 'bool'},
+            'col7': {'name': 'private', 'type': 'int64'},
+            'col8': {'name': 'content', 'type': 'str'},
+            'col9': {'name': 'order', 'type': 'int64'},
+            'col10': {'name': 'project-id', 'type': 'int64'},
+            'col11': {'name': 'project-name', 'type': 'str'},
+            'col12': {'name': 'todo-list-id', 'type': 'int64'},
+            'col13': {'name': 'todo-list-name', 'type': 'str'},
+            'col14': {'name': 'tasklist-private', 'type': 'bool'},
+            'col15': {'name': 'tasklist-isTemplate', 'type': 'bool'},
+            'col16': {'name': 'status', 'type': 'str'},
+            'col17': {'name': 'company-name', 'type': 'str'},
+            'col18': {'name': 'company-id', 'type': 'int64'},
+            'col19': {'name': 'creator-id', 'type': 'int64'},
+            'col20': {'name': 'creator-firstname', 'type': 'str'},
+            'col21': {'name': 'creator-lastname', 'type': 'str'},
+            'col22': {'name': 'updater-id', 'type': 'int64'},
+            'col23': {'name': 'updater-firstname', 'type': 'str'},
+            'col24': {'name': 'updater-lastname', 'type': 'str'},
+            'col25': {'name': 'completed', 'type': 'bool'},
+            'col26': {'name': 'start-date', 'type': 'datetime64'},
+            'col27': {'name': 'due-date-base', 'type': 'str'},
+            'col28': {'name': 'due-date', 'type': 'datetime64'},
+            'col29': {'name': 'created-on', 'type': 'datetime64'},
+            'col30': {'name': 'last-changed-on', 'type': 'datetime64'},
+            'col31': {'name': 'position', 'type': 'int64'},
+            'col32': {'name': 'estimated-minutes', 'type': 'int64'},
+            'col33': {'name': 'priority', 'type': 'str'},
+            'col34': {'name': 'progress', 'type': 'int64'},
+            'col35': {'name': 'harvest-enabled', 'type': 'bool'},
+            'col36': {'name': 'parentTaskId', 'type': 'numeric'},
+            'col37': {'name': 'lockdownId', 'type': 'numeric'},
+            'col38': {'name': 'tasklist-lockdownId', 'type': 'numeric'},
+            'col39': {'name': 'has-dependencies', 'type': 'int64'},
+            'col40': {'name': 'has-predecessors', 'type': 'int64'},
+            'col41': {'name': 'hasTickets', 'type': 'bool'},
+            'col42': {'name': 'timeIsLogged', 'type': 'numeric'},
+            'col43': {'name': 'attachments-count', 'type': 'int64'},
+            'col44': {'name': 'predecessors', 'type': 'str'},
+            'col45': {'name': 'attachments', 'type': 'str'},
+            'col46': {'name': 'canEdit', 'type': 'bool'},
+            'col47': {'name': 'viewEstimatedTime', 'type': 'bool'},
+            'col48': {'name': 'creator-avatar-url', 'type': 'str'},
+            'col49': {'name': 'canLogTime', 'type': 'bool'},
+            'col50': {'name': 'commentFollowerIds', 'type': 'str'},
+            'col51': {'name': 'changeFollowerIds', 'type': 'str'},
+            'col52': {'name': 'userFollowingComments', 'type': 'bool'},
+            'col53': {'name': 'userFollowingChanges', 'type': 'bool'},
+            'col54': {'name': 'DLM', 'type': 'int64'},
+            'col55': {'name': 'boardColumn', 'type': 'dict'},
+            'col56': {'name': 'cardId', 'type': 'numeric'},
+            'col57': {'name': 'responsible-party-ids', 'type': 'str'},
+            'col58': {'name': 'responsible-party-id', 'type': 'str'},
+            'col59': {'name': 'responsible-party-names', 'type': 'str'},
+            'col60': {'name': 'responsible-party-type', 'type': 'str'},
+            'col61': {'name': 'responsible-party-firstname', 'type': 'str'},
+            'col62': {'name': 'responsible-party-lastname', 'type': 'str'},
+            'col63': {'name': 'responsible-party-summary', 'type': 'str'},
+            'col64': {'name': 'assignedToTeams', 'type': 'str'},
+            'col65': {'name': 'commentFollowerSummary', 'type': 'str'},
+            'col66': {'name': 'parent-task', 'type': 'str'},
+            'col67': {'name': 'changeFollowerSummary', 'type': 'str'},
+            'col68': {'name': 'tags', 'type': 'str'},
+            'col69': {'name': 'recurring', 'type': 'str'}
+        }
+    },
+    "people": {
+        "base_url": "https://kemok.teamwork.com/people.json",
+        "key": "people",
+        "model": {
+            'col1': {'name': 'id', 'type': 'numeric'},
+            'col2': {'name': 'userUUID', 'type': 'str'},
+            'col3': {'name': 'user-name', 'type': 'str'},
+            'col4': {'name': 'full-name', 'type': 'str'},
+            'col5': {'name': 'first-name', 'type': 'str'},
+            'col6': {'name': 'last-name', 'type': 'str'},
+            'col7': {'name': 'email-address', 'type': 'str'},
+            'col8': {'name': 'email-alt-1', 'type': 'str'},
+            'col9': {'name': 'email-alt-2', 'type': 'str'},
+            'col10': {'name': 'email-alt-3', 'type': 'str'},
+            'col11': {'name': 'phone-number-mobile', 'type': 'str'},
+            'col12': {'name': 'phone-number-home', 'type': 'str'},
+            'col13': {'name': 'phone-number-fax', 'type': 'str'},
+            'col14': {'name': 'phone-number-office', 'type': 'str'},
+            'col15': {'name': 'phone-number-office-ext', 'type': 'str'},
+            'col16': {'name': 'phone-number-mobile-parts', 'type': 'str'},
+            'col17': {'name': 'address', 'type': 'str'},
+            'col18': {'name': 'address-line-2', 'type': 'str'},
+            'col19': {'name': 'address-line-1', 'type': 'str'},
+            'col20': {'name': 'address-zip', 'type': 'str'},
+            'col21': {'name': 'address-city', 'type': 'str'},
+            'col22': {'name': 'address-state', 'type': 'str'},
+            'col23': {'name': 'address-country', 'type': 'str'},
+            'col24': {'name': 'site-owner', 'type': 'bool'},
+            'col25': {'name': 'last-active', 'type': 'str'},
+            'col26': {'name': 'user-type', 'type': 'str'},
+            'col27': {'name': 'im-service', 'type': 'str'},
+            'col28': {'name': 'im-handle', 'type': 'str'},
+            'col29': {'name': 'login-count', 'type': 'str'},
+            'col30': {'name': 'openId', 'type': 'str'},
+            'col31': {'name': 'isServiceAccount', 'type': 'bool'},
+            'col32': {'name': 'twoFactorAuthEnabled', 'type': 'bool'},
+            'col33': {'name': 'company-id', 'type': 'str'},
+            'col34': {'name': 'isClientUser', 'type': 'bool'},
+            'col35': {'name': 'has-access-to-new-projects', 'type': 'bool'},
+            'col36': {'name': 'last-login', 'type': 'datetime64'},
+            'col37': {'name': 'companyId', 'type': 'str'},
+            'col38': {'name': 'administrator', 'type': 'bool'},
+            'col39': {'name': 'twitter', 'type': 'str'},
+            'col40': {'name': 'pid', 'type': 'str'},
+            'col41': {'name': 'profile-text', 'type': 'str'},
+            'col42': {'name': 'lengthOfDay', 'type': 'str'},
+            'col43': {'name': 'tags', 'type': 'str'},
+            'col44': {'name': 'company-name', 'type': 'str'},
+            'col45': {'name': 'last-changed-on', 'type': 'datetime64'},
+            'col46': {'name': 'deleted', 'type': 'bool'},
+            'col47': {'name': 'notes', 'type': 'str'},
+            'col48': {'name': 'permissions', 'type': 'str'},
+            'col49': {'name': 'created-at', 'type': 'str'},
+            'col50': {'name': 'useShorthandDurations', 'type': 'bool'},
+            'col51': {'name': 'textFormat', 'type': 'str'},
+            'col52': {'name': 'avatar-url', 'type': 'str'},
+            'col53': {'name': 'user-invited', 'type': 'str'},
+            'col54': {'name': 'user-invited-date', 'type': 'str'},
+            'col55': {'name': 'user-invited-status', 'type': 'str'},
+            'col56': {'name': 'in-owner-company', 'type': 'bool'},
+            'col57': {'name': 'title', 'type': 'str'},
+            'col58': {'name': 'profile', 'type': 'str'}
+        }
+    }
+}
+
+ZOHO = {
+    "by_list": [],
+    "all": ["contacts", "modules"],
+    "modules": {
+        "base_url": 'https://www.zohoapis.com/crm/v2/settings/modules',
+        "key": "modules",
+        "model": {
+            'col1': {'name': 'id', 'type': 'str'},
+            'col2': {'name': 'module_name', 'type': 'str'},
+            'col3': {'name': 'description', 'type': 'str'},
+            'col4': {'name': 'creatable', 'type': 'bool'},
+            'col5': {'name': 'inventory_template_supported', 'type': 'bool'},
+            'col6': {'name': 'modified_time', 'type': 'datetime64'},
+            'col7': {'name': 'plural_label', 'type': 'str'},
+            'col8': {'name': 'presence_sub_menu', 'type': 'bool'},
+            'col9': {'name': 'triggers_supported', 'type': 'bool'},
+            'col10': {'name': 'global_search_supported', 'type': 'bool'},
+            'col11': {'name': 'isBlueprintSupported', 'type': 'bool'},
+            'col12': {'name': 'visibility', 'type': 'int64'},
+            'col13': {'name': 'convertable', 'type': 'bool'},
+            'col14': {'name': 'editable', 'type': 'bool'},
+            'col15': {'name': 'emailTemplate_support', 'type': 'bool'},
+            'col16': {'name': 'profiles', 'type': 'dict'},
+            'col17': {'name': 'filter_supported', 'type': 'bool'},
+            'col18': {'name': 'show_as_tab', 'type': 'bool'},
+            'col19': {'name': 'web_link', 'type': 'str'},
+            'col20': {'name': 'sequence_number', 'type': 'int64'},
+            'col21': {'name': 'singular_label', 'type': 'str'},
+            'col22': {'name': 'viewable', 'type': 'bool'},
+            'col23': {'name': 'api_supported', 'type': 'bool'},
+            'col24': {'name': 'api_name', 'type': 'str'},
+            'col25': {'name': 'quick_create', 'type': 'bool'},
+            'col26': {'name': 'modified_by', 'type': 'str'},
+            'col27': {'name': 'generated_type', 'type': 'str'},
+            'col28': {'name': 'feeds_required', 'type': 'bool'},
+            'col29': {'name': 'scoring_supported', 'type': 'bool'},
+            'col30': {'name': 'webform_supported', 'type': 'bool'},
+            'col31': {'name': 'arguments', 'type': 'str'},
+            'col32': {'name': 'deletable', 'type': 'bool'},
+            'col33': {'name': 'business_card_field_limit', 'type': 'int64'},
+            'col34': {'name': 'parent_module', 'type': 'dict'}
+          }
+    },
+    "contacts": {
+        "base_url": "https://www.zohoapis.com/crm/v2/contacts",
+        "key": "data",
+        "model": {
+            'col1': {'name': 'Owner', 'type': 'dict'},
+            'col2': {'name': 'Email', 'type': 'str'},
+            'col3': {'name': 'Description', 'type': 'str'},
+            'col4': {'name': '$currency_symbol', 'type': 'str'},
+            'col5': {'name': '$review_process', 'type': 'dict'},
+            'col6': {'name': 'Mailing_Street', 'type': 'str'},
+            'col7': {'name': 'Salutation', 'type': 'str'},
+            'col8': {'name': 'Last_Activity_Time', 'type': 'str'},
+            'col9': {'name': 'First_Name', 'type': 'str'},
+            'col10': {'name': 'Full_Name', 'type': 'str'},
+            'col11': {'name': 'Record_Image', 'type': 'str'},
+            'col12': {'name': '$review', 'type': 'str'},
+            'col13': {'name': '$state', 'type': 'str'},
+            'col14': {'name': 'Unsubscribed_Mode', 'type': 'str'},
+            'col15': {'name': '$process_flow', 'type': 'bool'},
+            'col16': {'name': 'Mailing_Country', 'type': 'str'},
+            'col17': {'name': 'Account_Name', 'type': 'dict'},
+            'col18': {'name': 'id', 'type': 'str'},
+            'col19': {'name': '$approved', 'type': 'bool'},
+            'col20': {'name': 'Reporting_To', 'type': 'str'},
+            'col21': {'name': '$approval', 'type': 'dict'},
+            'col22': {'name': 'Modified_Time', 'type': 'datetime64'},
+            'col23': {'name': 'Tipo_de_contacto', 'type': 'str'},
+            'col24': {'name': 'Mailing_City', 'type': 'str'},
+            'col25': {'name': 'Created_Time', 'type': 'datetime64'},
+            'col26': {'name': 'Unsubscribed_Time', 'type': 'str'},
+            'col27': {'name': 'Title', 'type': 'str'},
+            'col28': {'name': '$editable', 'type': 'bool'},
+            'col29': {'name': 'Mobile', 'type': 'str'},
+            'col30': {'name': '$orchestration', 'type': 'str'},
+            'col31': {'name': 'Last_Name', 'type': 'str'},
+            'col32': {'name': '$in_merge', 'type': 'bool'},
+            'col33': {'name': 'Lead_Source', 'type': 'str'},
+            'col34': {'name': 'Tag', 'type': 'str'},
+            'col35': {'name': 'Created_By', 'type': 'dict'},
+            'col36': {'name': '$approval_state', 'type': 'str'}
         }
     }
 }

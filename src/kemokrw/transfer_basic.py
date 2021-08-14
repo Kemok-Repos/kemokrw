@@ -45,10 +45,10 @@ class BasicTransfer(Transfer):
         self.max_transfer = max_transfer
 
         # Verify for compatibility
-        self.verify()
-        if self.src.metadata["check_rows"] > max_transfer and self.max_transfer != 0:
-            print("*WARNING* Maximum number of rows detected. {0} of {1}.".format(self.src.metadata["check_rows"],
-                                                                                  self.max_transfer))
+        #self.verify()
+        #if self.src.metadata["check_rows"] > max_transfer and self.max_transfer != 0:
+        #    print("*WARNING* Maximum number of rows detected. {0} of {1}.".format(self.src.metadata["check_rows"],
+        #                                                                          self.max_transfer))
 
     def verify(self):
         """Verifica la compatibilidad de los objetos a transferir y verifica si el destino es igual a la fuente.
@@ -75,8 +75,8 @@ class BasicTransfer(Transfer):
         # Revisa que cada tipo de columna sea igual entre pares
         for i in self.src.metadata["columns"]:
             if self.src.metadata["columns"][i]["type"] != self.dst.metadata["columns"][i]["type"]:
-                raise Exception('No compatibility found. {0} type do not match {1}.'.format(
-                    self.src.metadata["columns"][i]["type"], self.dst.metadata["columns"][i]["type"]))
+                raise Exception('No compatibility found. {2} "{0}" type do not match "{1}".'.format(
+                    self.src.metadata["columns"][i]["type"], self.dst.metadata["columns"][i]["type"], i))
 
         verification = True
         # Revisa el número de filas en cada extremo
@@ -84,12 +84,16 @@ class BasicTransfer(Transfer):
             verification = False
 
         # Revisa que cada pareja de columnas para revisar los chequeos
-        for i in self.src.metadata["columns"]:
-            common_params = set(self.src.metadata["columns"][i].keys()) & set(self.dst.metadata["columns"][i].keys())
-            common_params.discard("subtype")
-            for j in common_params:
-                if self.src.metadata["columns"][i][j] != self.dst.metadata["columns"][i][j]:
-                    verification = False
+        if verification:
+            for i in self.src.metadata["columns"]:
+                common_params = set(self.src.metadata["columns"][i].keys()) & set(self.dst.metadata["columns"][i].keys())
+                common_params.discard("subtype")
+                for j in common_params:
+                    if self.src.metadata["columns"][i][j] != self.dst.metadata["columns"][i][j]:
+                        m = 'La columna {0} no hace match en la verificacion de {1}. {2} != {3}'
+                        print(m.format(i, j, str(self.src.metadata["columns"][i][j])
+                                       , str(self.dst.metadata["columns"][i][j])))
+                        verification = False
 
         self.verification = verification
         return verification
@@ -112,9 +116,12 @@ class BasicTransfer(Transfer):
         """
         self.verify()
 
+        if not self.verification and not self.src.data.empty:
+            self.src.get_data()
+
         total_tries = 1+retries
         n_try = 1
-        self.src.get_data()
+
         while n_try <= total_tries and not self.verification:
             if n_try > 1:
                 print("Transferring data. Try {0} out of {1}".format(n_try, total_tries))

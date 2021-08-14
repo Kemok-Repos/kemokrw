@@ -28,6 +28,10 @@ setuptools.setup(
         'psycopg2-binary>=2.8.6',
         'pymssql>=2.2.1',
         'SQLAlchemy>=1.3.24',
-        'requests>=2.25.1'
+        'requests>=2.25.1',
+        'google-api-python-client>=1.12.8',
+        'google-auth-httplib2>=0.1.0',
+        'google-auth-oauthlib>=0.4.4',
+        'unidecode>=1.2.0'
     ]
 )
