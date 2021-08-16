@@ -11,5 +11,6 @@ if __name__ == "__main__":
         dst_config = yaml.load(file, Loader=yaml.FullLoader)
 
     trf = DbDateTransfer(src_config, dst_config, 0)
+    #trf = DbKeyTransfer(src_config, dst_config, src_config['key_column'], 0)
     trf.tranfer(partitionDate='years_old')
 

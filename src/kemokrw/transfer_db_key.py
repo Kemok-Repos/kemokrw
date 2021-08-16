@@ -46,13 +46,13 @@ class DbKeyTransfer():
         # propuesta de implementación DbKeyTransfer basada en basictranfer.
         # UML: https://lucid.app/lucidchart/5c4d839e-6ec6-450d-988a-7eb71a48c264/edit?beaconFlowId=7200D524CFEBC447&page=P2mReXmc01Ko#
 
-    def __init__(self, src_config, dst_config, key, max_transfer=0, Multiprocessing=False):
+    def __init__(self, src_config, dst_config, max_transfer=0, Multiprocessing=False):
         self.max_tranfer = max_transfer
         # Unidad medida bloque lectura panda
         self.pack = 1000000
         self.src_config = src_config
         self.dst_config = dst_config
-        self.key_column = key
+        self.key_column = src_config['key_column']
 
         #multiprocessing option
         self.multiprocessing = Multiprocessing
