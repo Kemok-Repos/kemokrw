@@ -1,4 +1,4 @@
-from kemokrw.transfer_db_key import DbKeyTransfer
+from kemokrw.transfer_db_date import DbDateTransfer
 import yaml
 from multiprocessing import Pool
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
         dst_config = yaml.load(file, Loader=yaml.FullLoader)
 
     # Para utilizar multiprocessing pasar True al constructor.
-    trf = DbKeyTransfer(src_config, dst_config,  0, Multiprocessing=True)
+    trf = DbDateTransfer(src_config, dst_config,  0, Multiprocessing=True)
     with Pool(2) as p:
         #(verificar varios parametros)
         Params = [True, False]

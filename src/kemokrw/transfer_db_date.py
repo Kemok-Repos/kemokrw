@@ -125,28 +125,31 @@ class DbDateTransfer():
         condicion = []
         a1 = datetime.datetime.now()
         for i, k in enumerate(part):
-            a = datetime.datetime.now()
-            if re.match(r'\d{4}$', k):
-                condicion.append("where extract(year from {}) = '{}'".
-                                 format(self.date_column, k))
-            elif re.match(r'\d{4}-\d{2}$', k):
-                condicion.append("where  extract(year from {date_column}) = "
-                                 "'{year}' and extract(month "
-                                 "from {date_column}) = '{month}'".
-                                 format(date_column=self.date_column,
-                                        year=k[:4],
-                                        month=k[5:]))
+            if ((((i + 1) % 2) == 0 and self.workerPar) or
+                (((i) % 2) == 0 and not self.workerPar)) or \
+                    not self.multiprocessing:
+                a = datetime.datetime.now()
+                if re.match(r'\d{4}$', k):
+                    condicion.append("where extract(year from {}) = '{}'".
+                                     format(self.date_column, k))
+                elif re.match(r'\d{4}-\d{2}$', k):
+                    condicion.append("where  extract(year from {date_column}) = "
+                                     "'{year}' and extract(month "
+                                     "from {date_column}) = '{month}'".
+                                     format(date_column=self.date_column,
+                                            year=k[:4],
+                                            month=k[5:]))
 
-            elif re.match(r'\d{4}-\d{2}-\d{2}$',k):
-                condicion.append("where extract(day from {}) = '{}'".
-                                 format(self.date_column, k))
+                elif re.match(r'\d{4}-\d{2}-\d{2}$',k):
+                    condicion.append("where extract(day from {}) = '{}'".
+                                     format(self.date_column, k))
 
-            else:
-                raise Exception ('falla de formato')
+                else:
+                    raise Exception ('falla de formato')
 
-            # condicion.append(" where TO_CHAR({},'{}')='{}'".format(self.date_column, patern, k))
-            print(condicion[i])
-            self.TranferPartitions(Key=self.key_column, condition=condicion[i])
+                # condicion.append(" where TO_CHAR({},'{}')='{}'".format(self.date_column, patern, k))
+                print(condicion[i])
+                self.TranferPartitions(Key=self.key_column, condition=condicion[i])
 
         b = datetime.datetime.now()
         tiempo = b - a1
@@ -158,7 +161,8 @@ class DbDateTransfer():
         src = ExtractDB(self.src_config["db"], self.src_config["table"],
                         self.src_config["model"], order="",
                         condition=condition, key=Key,
-                        id_passbolt=self.src_config['id_passbolt'])
+                        id_passbolt=self.src_config['id_passbolt'],
+                        config_passbolt=self.src_config["config_passbolt"])
 
         dst = LoadDB(self.dst_config["db"], self.dst_config["table"],
                      self.dst_config["model"], order="",
