@@ -1,4 +1,4 @@
-kemokrw/examples/api-to-db/*.json
+examples/api-to-db/*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

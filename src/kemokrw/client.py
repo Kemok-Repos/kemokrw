@@ -1,9 +1,14 @@
 from abc import ABC, abstractmethod
 
 class ApiClient(ABC):
-    """Clase ApiCLient
+    """Clase Extract
 
-    Cliente para manejar la API de diferentes servicios.
+    Encapsula el manejo de una API para simplificar los procesos de autenticación y de llamadas a los endpoints.
+
+    Métodos
+    -------
+    get():
+        Realiza una solicitud a un endpoint utilizando el verbo GET.
     """
     @abstractmethod
     def get(self):

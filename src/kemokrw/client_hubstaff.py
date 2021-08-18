@@ -1,5 +1,4 @@
 from kemokrw.client import ApiClient
-import kemokrw.config_api as config
 from datetime import datetime, timedelta
 import requests
 import time
@@ -7,7 +6,9 @@ import json
 
 
 class HubstaffClient(ApiClient):
-    """Clase para manejar la API de Hubstaff.
+    """Clase HubstaffClient implementacion de la clase ApiClient.
+
+     Cumple la función de encapsular el manejador la API de Hubstaff.
 
     Atributos
     ---------
@@ -21,13 +22,15 @@ class HubstaffClient(ApiClient):
 
     Métodos
     -------
-    get_access_token():
+    refresh():
         Obtiene el token de autenticación necesario para acceder a la API.
     get():
-        Crea GET requests de la API. Retorna un Json con el resultado.
+        Crea una llamada GET a la API. Retorna un Json con el resultado.
+    post():
+        Crea una llamada POST a la API. Retorna un Json con el resultado.
     """
-    def __init__(self, path='HubstaffCredentials.json', refresh_token=None, organization= 'Kemok'):
-        """Construye los atributos necesarios para la autenticación.
+    def __init__(self, path='HubstaffCredentials.json', refresh_token=None, organization='Kemok'):
+        """Construye un objeto encapsulando la API de Hubstaff.
 
         Parametros
         ----------
@@ -70,8 +73,8 @@ class HubstaffClient(ApiClient):
         self.refresh()
 
         # Obtiene el token de la organizacion
-        response = self.get(config.HUBSTAFF['organizations']['base_url'])
-        for i in response[config.HUBSTAFF['organizations']['key']]:
+        response = self.get("https://api.hubstaff.com/v2/organizations")
+        for i in response["organizations"]:
             if i['name'] == self.organization:
                 self.organization_id = i['id']
         print('Cliente de Hubstaff exitoso.')
@@ -97,6 +100,7 @@ class HubstaffClient(ApiClient):
             self.headers = {'Accept': 'application/json', 'Authorization': 'Bearer ' + self.access_token}
 
     def get(self, url, params=None):
+        """ Método que crea una llamada GET a la API. Retorna un Json con el resultado."""
         counter, exception = 0, None
         while counter < 3:
             try:
@@ -114,6 +118,7 @@ class HubstaffClient(ApiClient):
         raise exception
 
     def post(self, url, params=None, data=None):
+        """ Método que crea una llamada POST a la API. Retorna un Json con el resultado."""
         counter, exception = 0, None
         while counter < 3:
             try:

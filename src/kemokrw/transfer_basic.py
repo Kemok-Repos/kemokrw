@@ -44,12 +44,6 @@ class BasicTransfer(Transfer):
         self.verification = None
         self.max_transfer = max_transfer
 
-        # Verify for compatibility
-        #self.verify()
-        #if self.src.metadata["check_rows"] > max_transfer and self.max_transfer != 0:
-        #    print("*WARNING* Maximum number of rows detected. {0} of {1}.".format(self.src.metadata["check_rows"],
-        #                                                                          self.max_transfer))
-
     def verify(self):
         """Verifica la compatibilidad de los objetos a transferir y verifica si el destino es igual a la fuente.
 
@@ -116,7 +110,7 @@ class BasicTransfer(Transfer):
         """
         self.verify()
 
-        if not self.verification and not self.src.data.empty:
+        if not self.verification and self.src.data.empty:
             self.src.get_data()
 
         total_tries = 1+retries

@@ -5,10 +5,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="kemokrw",
-    version="0.0.3",
+    version="0.0.4",
     author="Kevin Mazariegos",
     author_email="kevin@kemok.io",
-    description="A small example package",
+    description="Paquete de extracción y carga desde diferentes tipo de origenes y destinos",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/pypa/sampleproject",

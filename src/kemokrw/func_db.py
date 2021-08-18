@@ -4,13 +4,14 @@ import kemokrw.config_db as config
 
 
 def model_format_check(model):
+    """ Revisa que el modelo se encuentre en el formato correcto. """
     for i in model:
         if not match("^col\d+$", i):
             raise Exception("El formato del modelo es incorrecto: {}".format(i))
 
 
 def execute_srquery(conn, query):
-    """Ejecuta un query con un resultario unitario"""
+    """ Ejecuta un query con un resultario unitario. """
     attempts = 0
     while attempts < 3:
         try:
@@ -29,7 +30,7 @@ def execute_srquery(conn, query):
 
 
 def get_db_metadata(conn, dbms, model, table, condition):
-    # Incluir manejo de errores para verificar conexión a base de datos 3 veces
+    """ Revisa la conexión y la metadata de un tabla sin extraer los datos. """
     connection = conn
     execute_srquery(connection, "SELECT 1;")
 
@@ -57,7 +58,8 @@ def get_db_metadata(conn, dbms, model, table, condition):
             query = config.COLUMN_CHECK[dbms][col["type"]][j].format(column=model[i]["name"], table=table,
                                                                      condition=condition)
             col[j] = execute_srquery(connection, query)
-
+            if j == 'check_sum' and col[j]:
+                col[j] = float(col[j])
         columns[i] = col
 
     metadata["columns"] = columns

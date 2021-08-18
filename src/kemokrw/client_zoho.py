@@ -1,5 +1,4 @@
 from kemokrw.client import ApiClient
-import kemokrw.config_api as config
 from datetime import datetime, timedelta
 import requests
 import time
@@ -7,7 +6,9 @@ import json
 
 
 class ZohoClient(ApiClient):
-    """Clase para manejar la API de Zoho.
+    """Clase ZohoClient implementacion de la clase ApiClient.
+
+     Cumple la función de encapsular el manejador la API de Zoho CRM.
 
     Atributos
     ---------
@@ -20,22 +21,22 @@ class ZohoClient(ApiClient):
 
     Métodos
     -------
-    get_access_token():
+    refresh():
         Obtiene el token de autenticación necesario para acceder a la API.
     get():
-        Crea GET requests de la API. Retorna un Json con el resultado.
+        Crea una llamada GET a la API. Retorna un Json con el resultado.
+    post():
+        Crea una llamada POST a la API. Retorna un Json con el resultado.
     """
     def __init__(self, filepath='ZohoCredentials.json', access_info=None):
-        """Construye los atributos necesarios para la autenticación.
+        """Construye un objeto encapsulando la API de Zoho CRM.
 
         Parametros
         ----------
-            code : str
-                Código utilizado para solicitar el access_token
             access_token : str
                 Token para autenticar los requests.
-            refresh_token: str
-                Token para obtener un access token.
+            access_info: dict
+                Diccionario con la información necesaria para autenticar la aplicación.
             expiration : datetime
                 Fecha y hora de expiración del token.
             filepath : str
@@ -63,7 +64,7 @@ class ZohoClient(ApiClient):
         self.refresh()
 
     def refresh(self):
-        """Genera un access_token a partir del refresh_token"""
+        """Genera un access_token a partir del la información de acceso"""
         if self.expiration > datetime.utcnow() and self.access_token is not None:
             print('Access Token aun es valido.')
         elif 'refresh_token' in self.access_info.keys():
@@ -101,6 +102,7 @@ class ZohoClient(ApiClient):
             self.headers = {'Accept': 'application/json', 'Authorization': 'Zoho-oauthtoken ' + self.access_token}
 
     def get(self, url, params=None):
+        """ Método que crea una llamada GET a la API. Retorna un Json con el resultado."""
         counter, exception = 0, None
         while counter < 3:
             try:
@@ -118,6 +120,7 @@ class ZohoClient(ApiClient):
         raise exception
 
     def post(self, url, params=None, data=None):
+        """ Método que crea una llamada POST a la API. Retorna un Json con el resultado."""
         counter, exception = 0, None
         while counter < 3:
             try:

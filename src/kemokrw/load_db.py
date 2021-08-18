@@ -7,7 +7,7 @@ import pandas as pd
 
 
 class LoadDB(Load):
-    """"Clase LoadDB implementación de la clase Load.
+    """" Clase LoadDB implementación de la clase Load.
 
     Cumple la función de cargar información a una bases de datos.
 
@@ -31,7 +31,7 @@ class LoadDB(Load):
     """
 
     def __init__(self, db, table, model, condition="", order="", chunksize=1000):
-        """Construye los atributos necesarios para almacenar la información.
+        """ Construye los atributos necesarios para almacenar la información.
 
         Parametros
         ----------
@@ -64,12 +64,30 @@ class LoadDB(Load):
         self.get_metadata()
 
     @classmethod
-    def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
-        """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
+    def get_model(cls, db, model_id, condition="", order=""):
         pass
-        
+
     @classmethod
     def query_model(cls, db, table, condition="", order="", include_columns=None, exclude_columns=None, xconfig=""):
+        """ Construye un objeto de carga desde base de datos usando un modelo generado automaticamente.
+
+        Parametros
+        ----------
+            db : str
+                Connection string para bases de datos en SQLAlchemy.
+            table : str
+                Tabla que se va a extraer con el objeto.
+            condition : str
+                Condición de "WHERE" a usar en la extracción.
+            order : str
+                Columas por las que se ordena el query.
+            include_columnas: str
+                Columnas a incluir dentro del modelo obtenido.
+            exclude_columnas: str
+                Columnas a excluir dentro del modelo obtenido.
+            xconfig: str
+                Condicional dentro del query para incluir o excluir columnas. Ej. 'AND a = b'
+        """
         dbms = db.split('+')[0]
         model = dict()
         engine = create_engine(db)
@@ -104,11 +122,11 @@ class LoadDB(Load):
         return cls(db, table, model, condition, order)
 
     def get_metadata(self):
-        """Método que actualiza la metadata de la tabla de extracción"""
+        """ Método que actualiza la metadata de la tabla de extracción. """
         self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition)
 
     def save_data(self, data):
-        """Almacenar la información de un DataFrame.
+        """ Almacenar la información de un DataFrame.
 
         Parametros
         ----------
@@ -140,5 +158,6 @@ class LoadDB(Load):
 
     @staticmethod
     def built_connection_string(login, password, host, port, schema):
+        """ Constuye un string de conexión compatible con SQLAlquemy. """
         con_string = "postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}"
         return con_string.format(login, password, host, port, schema)
