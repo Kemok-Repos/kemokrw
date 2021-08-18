@@ -66,7 +66,7 @@ class GoogleClient(ApiClient):
                 self.credentials = flow.run_local_server(port=0)
             with open(self.token_file, 'w') as token:
                 token.write(self.credentials.to_json())
-        service = build('sheets', 'v4', credentials=self.credentials)
+        service = build('sheets', 'v4', credentials=self.credentials, cache_discovery=False)
         self.service = service.spreadsheets()
 
     def get(self, spreadsheet, data_range):
