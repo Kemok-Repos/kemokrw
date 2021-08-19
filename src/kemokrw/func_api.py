@@ -128,14 +128,18 @@ def match_model(model, data, api=True):
         for i in model:
             column_names[model[i]['name']] = i
         data.rename(column_names, axis=1, inplace=True)
+
         # Agregar columnas faltantes en los datos extraídos.
         for i in model:
             if i not in data.columns:
                 data[i] = np.NaN
                 print(model[i]['name']+' not found. Adding artificially')
+
         # Identificar errores de columnas faltantes en el modelo.
         for i in data.columns:
-            if i not in model.keys():
+            if i not in model.keys() and not api:
+                data.drop(columns=i, inplace=True)
+            elif i not in model.keys() and api:
                 print(data.columns)
                 raise Exception('Llave erronea: La columna "{}" no se encuentra dentro del modelo.'.format(i))
 

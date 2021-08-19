@@ -28,7 +28,7 @@ class ZohoClient(ApiClient):
     post():
         Crea una llamada POST a la API. Retorna un Json con el resultado.
     """
-    def __init__(self, filepath='ZohoCredentials.json', access_info=None):
+    def __init__(self, filepath='ZohoCredentials.json'):
         """Construye un objeto encapsulando la API de Zoho CRM.
 
         Parametros

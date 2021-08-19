@@ -29,7 +29,7 @@ class LoadFile(Load):
     save_data():
         Almacena la data de un pandas.DataFrame Object en una base de datos.
     """
-    def __init__(self, path, sheet, file_type, model):
+    def __init__(self, path, sheet, model):
         """Construye los atributos necesarios para almacenar la información.
 
         Parametros
@@ -48,15 +48,16 @@ class LoadFile(Load):
         """
         self.path = path
         self.sheet = sheet
-        self.file_type = file_type.lower()
+        extension = path.split('.')
+        self.file_type = extension[-1]
         self.model = model
         self.metadata = None
 
-        if file_type == 'excel' and not os.path.isfile(self.path):
+        if self.file_type == 'xlsx' and not os.path.isfile(self.path):
             wb = Workbook()
             wb.save(self.path)
 
-        if file_type == 'csv' and not os.path.isfile(self.path):
+        if self.file_type == 'csv' and not os.path.isfile(self.path):
             empty_file = pd.DataFrame(list())
             empty_file.to_csv(self.path)
 
@@ -75,7 +76,7 @@ class LoadFile(Load):
                 Id del modelo dentro de la tabla de maestro_de_modelos.
         """
         model_config = query_model_from_db(db, model_id)
-        return cls(model_config['path'], model_config['sheet'], model_config['file_type'], model_config['model'])
+        return cls(model_config.get('path'), model_config.get('model'), model_config.get('sheet'))
 
     def get_metadata(self):
         """Método que actualiza la metadata del archivo almacenado"""
@@ -102,7 +103,7 @@ class LoadFile(Load):
             column_names[i] = self.model[i]['name']
         data.rename(column_names, axis=1, inplace=True)
 
-        if self.file_type == 'excel':
+        if self.file_type == 'xlsx':
             data.to_excel(self.path, self.sheet, index=False)
         elif self.file_type == 'csv':
             data.to_csv(self.path, index=False)

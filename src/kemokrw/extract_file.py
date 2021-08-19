@@ -25,7 +25,7 @@ class ExtractFile(Extract):
      get_data():
          Obtiene la data un archivo.
      """
-    def __init__(self, path, sheet, file_type, model, separator=',', encoding='utf-8'):
+    def __init__(self, path, model, sheet='Hoja1', separator=',', encoding='utf-8'):
         """Construye los atributos necesarios para cargar la información.
 
         Parametros
@@ -44,7 +44,8 @@ class ExtractFile(Extract):
         """
         self.path = path
         self.sheet = sheet
-        self.file_type = file_type.lower()
+        extension = path.split('.')
+        self.file_type = extension[-1]
         self.separator = separator
         self.encoding = encoding
         self.model = model
@@ -66,7 +67,8 @@ class ExtractFile(Extract):
                 Id del modelo dentro de la tabla de maestro_de_modelos.
         """
         model_config = query_model_from_db(db, model_id)
-        return cls(model_config['path'], model_config['sheet'], model_config['file_type'], model_config['model'])
+        return cls(model_config.get('path'), model_config.get('model'), model_config.get('sheet'),
+                   model_config.get('separator'), model_config.get('encoding'))
 
     def get_metadata(self):
         """ Método que genera la metadata de los datos extraidos. """
@@ -76,7 +78,7 @@ class ExtractFile(Extract):
     def get_data(self):
         """Método que genera un Dataframe desde un archivo"""
         self.data = pd.DataFrame()
-        if self.file_type == 'excel':
+        if self.file_type == 'xlsx':
             try:
                 self.data = pd.read_excel(self.path, sheet_name=self.sheet)
             except ValueError as err:
