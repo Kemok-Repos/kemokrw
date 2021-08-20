@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import json
 import unidecode
+import math
 
 
 def date_range(params):
@@ -201,7 +202,7 @@ def match_model(model, data, api=True):
 
 def convert_date_from_gsheet(x):
     """ Convierte la fecha de el formato de Google Sheet a un objeto datetime. """
-    if x:
+    if x and not math.isnan(x):
         date_part = datetime(1899, 12, 30) + timedelta(days=int(x))
         time_part = (x - int(x))*86400
         timestamp = date_part + timedelta(seconds=int(time_part))
