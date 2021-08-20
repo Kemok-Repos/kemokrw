@@ -53,7 +53,7 @@ COLUMN_CHECK = {
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     },
     "text": {
-      "check_hash": "SELECT md5(string_agg({column}::text,'')) FROM {table} {condition};",
+      "check_hash": "SELECT md5(string_agg({column}::text,'' ORDER BY {column})) FROM {table} {condition};",
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     },
     "datetime": {
