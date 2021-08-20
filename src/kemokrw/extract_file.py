@@ -43,11 +43,11 @@ class ExtractFile(Extract):
                 determinar diferencias.
         """
         self.path = path
-        self.sheet = sheet
+        self.sheet = str(sheet or 'Hoja1')
         extension = path.split('.')
         self.file_type = extension[-1]
-        self.separator = separator
-        self.encoding = encoding
+        self.separator = str(separator or ',')
+        self.encoding = str(encoding or 'utf-8')
         self.model = model
         self.metadata = dict()
         self.data = pd.DataFrame()

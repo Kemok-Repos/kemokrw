@@ -29,7 +29,7 @@ class LoadFile(Load):
     save_data():
         Almacena la data de un pandas.DataFrame Object en una base de datos.
     """
-    def __init__(self, path, sheet, model):
+    def __init__(self, path, model, sheet='Hoja1'):
         """Construye los atributos necesarios para almacenar la información.
 
         Parametros
@@ -47,7 +47,7 @@ class LoadFile(Load):
                 determinar diferencias.
         """
         self.path = path
-        self.sheet = sheet
+        self.sheet = str(sheet or 'Hoja1')
         extension = path.split('.')
         self.file_type = extension[-1]
         self.model = model

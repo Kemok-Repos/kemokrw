@@ -55,8 +55,8 @@ class LoadDB(Load):
         self.dbms = db.split('+')[0]
         self.table = table
         self.model = model
-        self.condition = condition
-        self.order = order
+        self.condition = str(condition or '')
+        self.order = str(order or '')
         self.chunksize = chunksize
         self.metadata = None
 

@@ -58,8 +58,8 @@ class ExtractDB(Extract):
         self.dbms = db.split('+')[0]
         self.table = table
         self.model = model
-        self.condition = condition
-        self.order = order
+        self.condition = str(condition or '')
+        self.order = str(order or '')
         self.metadata = dict()
         self.data = pd.DataFrame()
 
