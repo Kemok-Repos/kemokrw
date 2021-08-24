@@ -3,17 +3,28 @@ COLUMN_TYPES = {
     "INT",
     "INTEGER",
     "NUMERIC",
+    "TINYINT",
     "BIGINT",
     "SMALLINT",
     "DOUBLE PRECISION",
-    "FLOAT"
-
+    "FLOAT",
+    "REAL",
+    "MONEY",
+    "SMALLMONEY",
+    "DECIMAL",
+    "SERIAL",
+    "BIGSERIAL",
+    "SMALLSERIAL"
   ],
   "text": [
     "CHAR",
+    "CHARACTER",
+    "NCHAR",
     "VARCHAR",
+    "NVARCHAR",
     "CHARACTER VARYING",
     "TEXT",
+    "NTEXT",
     "STRING",
     "TEXT[]"
   ],
@@ -22,7 +33,12 @@ COLUMN_TYPES = {
     "DATE",
     "TIMESTAMP",
     "TIMESTAMP WITH TIME ZONE",
-    "TIMESTAMP WITHOUT TIME ZONE"
+    "TIMESTAMP WITHOUT TIME ZONE",
+    "TIME",
+    "TIME WITH TIME ZONE",
+    "TIME WITHOUT TIME ZONE",
+    "SMALLDATETIME",
+    "DATETIMEOFFSET"
   ],
   "boolean": [
     "BOOL",
@@ -31,7 +47,11 @@ COLUMN_TYPES = {
   "other": [
     "BIT",
     "JSON",
-    "JSONB"
+    "JSONB",
+    "BINARY",
+    "NVARBINARY",
+    "BITEA",
+    "INTERVAL"
   ]
 }
 
