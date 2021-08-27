@@ -67,7 +67,7 @@ class ExtractZoho(Extract):
         self.model = model
         self.metadata = dict()
         self.data = pd.DataFrame()
-        self.params = params
+        self.params = (params or dict())
 
         model_format_check(self.model)
         self.get_metadata()

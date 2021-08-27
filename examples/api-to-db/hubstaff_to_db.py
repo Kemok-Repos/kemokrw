@@ -5,9 +5,8 @@ from kemokrw.transfer_basic import BasicTransfer
 from sqlalchemy import create_engine
 import datetime
 
-PAT = 'Insertar Personal Access Token aquí'
-
-DB = LoadDB.built_connection_string('user', 'password', 'ip', 'port', 'database')
+PAT = ""
+DB = ""
 
 if __name__ == '__main__':
 
@@ -21,7 +20,7 @@ if __name__ == '__main__':
 
     # Transferir actividades
     condicion = "WHERE (starts_at AT TIME ZONE 'UTC')::date = '{}'"
-    x = datetime.date(2021, 8, 16)
+    x = datetime.date(2021, 8, 25)
     while x < datetime.date.today():
         print(str(x))
         src = ExtractHubstaff.get_model(client, DB, 3, params={"date": str(x)})
@@ -32,7 +31,7 @@ if __name__ == '__main__':
 
     # Transferir actividades de applicacion
     condicion = "WHERE (time_slot AT TIME ZONE 'UTC')::date = '{}'"
-    x = datetime.date(2021, 8, 16)
+    x = datetime.date(2021, 8, 25)
     while x < datetime.date.today():
         print(str(x))
         src = ExtractHubstaff.get_model(client, DB, 4, params={"date": str(x)})
@@ -45,7 +44,7 @@ if __name__ == '__main__':
 
     # Transferir actividades de url
     condicion = "WHERE (time_slot AT TIME ZONE 'UTC')::date = '{}'"
-    x = datetime.date(2021, 8, 16)
+    x = datetime.date(2021, 8, 25)
     while x < datetime.date.today() + datetime.timedelta(days=1):
         print(str(x))
         src = ExtractHubstaff.get_model(client, DB, 5, params={"date": str(x)})

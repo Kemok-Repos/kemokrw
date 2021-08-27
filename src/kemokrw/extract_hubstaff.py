@@ -71,7 +71,8 @@ class ExtractHubstaff(Extract):
         self.model = model
         self.metadata = dict()
         self.data = pd.DataFrame()
-        self.params = date_range(params)
+        self.params = (params or dict())
+        self.params = date_range(self.params)
 
         model_format_check(self.model)
         self.get_metadata()

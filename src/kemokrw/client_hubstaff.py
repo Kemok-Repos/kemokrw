@@ -52,7 +52,7 @@ class HubstaffClient(ApiClient):
         self.access_token = None
         self.refresh_token = refresh_token
         self.expiration = datetime.utcnow()
-        self.organization = organization
+        self.organization = (organization or 'Kemok')
         self.organization_id = None
         self.filepath = path
         self.headers = None
