@@ -1,0 +1,7 @@
+test de imagenes docker: 
+python3.9-slim.Dockerfile
+
+Esta imange tienen vulnerabilidades detectadas
+https://snyk.io/test/docker/python%3A3.9-rc-slim-buster
+
+

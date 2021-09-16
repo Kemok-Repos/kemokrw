@@ -30,7 +30,7 @@ pandas==1.2.4
 passbolt-python-api==0.1.6
 pluggy==0.13.1
 protobuf==3.17.3
-psycopg2==2.8.6
+psycopg2>2.8
 py==1.10.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
