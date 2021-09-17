@@ -1,0 +1,52 @@
+2021-07-29 14:09:57.717814 Calculating Table partitions..
+2021-07-29 14:09:57.817902 Calculating Table partitions..
+2021-07-29 14:09:59.055251 Table partition 1 --- where idfacturadetalle >= 0 and idfacturadetalle <1126547
+2021-07-29 14:09:59.362177 Table partition 1 --- where idfacturadetalle >= 0 and idfacturadetalle <1126547
+2021-07-29 14:10:00.422566 Table partition 2 --- where idfacturadetalle >= 1126547 and idfacturadetalle <7204505
+2021-07-29 14:10:00.981638 Table partition 2 --- where idfacturadetalle >= 1126547 and idfacturadetalle <7204505
+2021-07-29 14:10:01.967177 Table partition 3 --- where idfacturadetalle >= 7204505 and idfacturadetalle <8244011
+2021-07-29 14:10:02.805536 Table partition 3 --- where idfacturadetalle >= 7204505 and idfacturadetalle <8244011
+2021-07-29 14:10:03.618877 Table partition 4 --- where idfacturadetalle >= 8244011 and idfacturadetalle <9283361
+2021-07-29 14:10:04.789349 Table partition 4 --- where idfacturadetalle >= 8244011 and idfacturadetalle <9283361
+2021-07-29 14:10:05.429833 Table partition 5 --- where idfacturadetalle >= 9283361 and idfacturadetalle <10343259
+2021-07-29 14:10:06.888205 Table partition 5 --- where idfacturadetalle >= 9283361 and idfacturadetalle <10343259
+2021-07-29 14:10:07.368215 Table partition 6 --- where idfacturadetalle >= 10343259 and idfacturadetalle <11379250
+2021-07-29 14:10:09.322600 Table partition 6 --- where idfacturadetalle >= 10343259 and idfacturadetalle <11379250
+2021-07-29 14:10:09.577972 Table partition 7 --- where idfacturadetalle >= 11379250 and idfacturadetalle <12416182
+2021-07-29 14:10:11.577699 Table partition 7 --- where idfacturadetalle >= 11379250 and idfacturadetalle <12416182
+2021-07-29 14:10:13.160338 Table partition 8 --- where idfacturadetalle >= 12416182 and idfacturadetalle <13157376
+2021-07-29 14:10:13.160452 Procesing table Partition  No. 2 --- where idfacturadetalle >= 1126547 and idfacturadetalle <7204505 
+2021-07-29 14:10:15.133818 Table partition 8 --- where idfacturadetalle >= 12416182 and idfacturadetalle <13157376
+2021-07-29 14:10:15.133922 Procesing table Partition  No. 1 --- where idfacturadetalle >= 0 and idfacturadetalle <1126547 
+Transfer successful.
+2021-07-29 14:17:52.797243 Processed Time Elapsed: 459.6367seg
+2021-07-29 14:17:52.797328 Total Time Elapsed: 476.9295seg
+2021-07-29 14:17:52.797365 Procesing table Partition  No. 4 --- where idfacturadetalle >= 8244011 and idfacturadetalle <9283361 
+Transfer successful.
+2021-07-29 14:17:58.998045 Processed Time Elapsed: 463.8641seg
+2021-07-29 14:17:58.998122 Total Time Elapsed: 483.1303seg
+2021-07-29 14:17:58.998141 Procesing table Partition  No. 3 --- where idfacturadetalle >= 7204505 and idfacturadetalle <8244011 
+Transfer successful.
+2021-07-29 14:25:51.286914 Processed Time Elapsed: 472.2887seg
+2021-07-29 14:25:51.287004 Total Time Elapsed: 955.4191seg
+2021-07-29 14:25:51.287030 Procesing table Partition  No. 5 --- where idfacturadetalle >= 9283361 and idfacturadetalle <10343259 
+Transfer successful.
+2021-07-29 14:26:14.742542 Processed Time Elapsed: 501.9451seg
+2021-07-29 14:26:14.742618 Total Time Elapsed: 978.8748seg
+2021-07-29 14:26:14.742650 Procesing table Partition  No. 6 --- where idfacturadetalle >= 10343259 and idfacturadetalle <11379250 
+Transfer successful.
+2021-07-29 14:38:24.789307 Processed Time Elapsed: 753.5022seg
+2021-07-29 14:38:24.789572 Total Time Elapsed: 1708.9217seg
+2021-07-29 14:38:24.789603 Procesing table Partition  No. 7 --- where idfacturadetalle >= 11379250 and idfacturadetalle <12416182 
+Transfer successful.
+2021-07-29 14:38:39.811304 Processed Time Elapsed: 745.0686seg
+2021-07-29 14:38:39.811387 Total Time Elapsed: 1723.9436seg
+2021-07-29 14:38:39.811429 Procesing table Partition  No. 8 --- where idfacturadetalle >= 12416182 and idfacturadetalle <=13157376 
+Transfer successful.
+2021-07-29 14:45:33.543371 Processed Time Elapsed: 428.7537seg
+2021-07-29 14:45:33.543443 Total Time Elapsed: 2137.6756seg
+Transferring data. Try 1 out of 5
+Transfer successful.
+2021-07-29 14:47:40.699036 Processed Time Elapsed: 540.8876seg
+2021-07-29 14:47:40.699439 Total Time Elapsed: 2264.8316seg
+end main

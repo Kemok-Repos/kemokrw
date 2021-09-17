@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 db: postgresql+psycopg2://srtendero:FFk39$.A210%@45.79.216.118/srtendero
 table: erp_gom_precio
 model: 
@@ -13,3 +14,72 @@ model:
     col4: 
       name: fechaingreso
       type: DateTime
+=======
+db: postgresql+psycopg2://postgres:maitreya1234@localhost:5433/srtendero
+table: erp_gom_facturadetalle_new
+model:
+    col1:
+      name: idfacturadetalle
+      type: int4
+    col2:
+      name: idfactura
+      type: int4
+    col3:
+      name: idproductomedida
+      type: int4
+    col4:
+      name: cantidadmedida
+      type: numeric(18,8)
+    col5:
+      name: cantidad
+      type: numeric(18,8)
+    col6:
+      name: cantidaddevuelta
+      type: numeric(18,8)
+    col7:
+      name: costounitario
+      type: numeric(18,8)
+    col8:
+      name: costoalterno
+      type: numeric(18,8)
+    col9:
+      name: precioafectado
+      type: numeric(18,8)
+    col10:
+      name: preciosugerido
+      type: numeric(18,8)
+    col11:
+      name: montodescuento
+      type: money
+    col12:
+      name: montoiva
+      type: money
+    col13:
+      name: montosubtotal
+      type: money
+    col14:
+      name: descripcion
+      type: varchar(255)
+    col15:
+      name: usuarioingreso
+      type: varchar(25)
+    col16:
+      name: fechaingreso
+      type: timestamp
+    col17:
+      name: timestamp
+      type: timestamp
+    col18:
+      name: idvendedor
+      type: int4
+    col19:
+      name: montoexento
+      type: money
+    col20:
+      name: condicionoferta
+      type: bit(1)
+    col21:
+      name: idproductoexento
+      type: int4
+
+>>>>>>> @{u}

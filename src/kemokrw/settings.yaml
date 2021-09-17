@@ -1,0 +1,14 @@
+# Database and email
+db: "postgresql://notificaciones_marketing:7ba40379e4597bf535dfa79f9c45b60a@192.155.95.216/notificaciones_marketing"
+insert: |-
+    insert into %s (fecha, nombre, telefono, email, empresa, otros)
+    values
+    %s;
+values: |-
+    (
+        '%(fecha)s', '%(nombre)s', '%(telefono)s', '%(email)s', '%(empresa)s',
+        '%(otros)s'
+    )
+delete: |-
+    delete from %s;
+

@@ -3,11 +3,15 @@ COLUMN_TYPES = {
     "INT",
     "INTEGER",
     "NUMERIC",
+<<<<<<< HEAD
     "BIGINT",
     "SMALLINT",
     "DOUBLE PRECISION",
     "FLOAT"
 
+=======
+    "MONEY"
+>>>>>>> @{u}
   ],
   "text": [
     "CHAR",
@@ -34,11 +38,26 @@ COLUMN_TYPES = {
     "JSONB"
   ]
 }
-
 TABLE_QUERY = "SELECT {columns} FROM {table} {condition} {order};"
+
+TABLE_QUERY_MAX = "WITH particion AS  " \
+                  "(select {key} as valor " \
+                  "FROM {table} order by 1 offset {offset} limit {limit}) " \
+                  "select max(valor)" \
+                  "from particion;"
+
+TABLE_DATE_YEAR = "SELECT string_agg(distinct TO_CHAR({key},'YYYY'),',') as years " \
+                   "FROM {table} WHERE TO_CHAR({key},'YYYY') {oper} '{year}';"
+
+
+TABLE_DATE_MONTH = "SELECT string_agg(distinct TO_CHAR({key},'{patern}'),',') as months " \
+                   "FROM {table} WHERE TO_CHAR({key},'YYYY')='{year}' and TO_CHAR({key},'MM') {oper} '{month};'"
 
 TABLE_CHECK = {
   "check_rows": "SELECT COUNT(*) FROM {table} {condition};"
+}
+TABLE_CHECK_LIMIT = {
+  "check_rows": "SELECT COUNT(*) FROM {table} {condition} {limit};"
 }
 
 COLUMN_QUERY = {
@@ -49,22 +68,27 @@ COLUMN_QUERY = {
 COLUMN_CHECK = {
   "postgresql": {
     "numeric": {
-      "check_sum": "SELECT ROUND(SUM(COALESCE({column},0)),0) FROM {table} {condition};",
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_sum": "SELECT ROUND(SUM(COALESCE({column}::numeric,0)),0) FROM {table} {condition} {order};",
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "text": {
+<<<<<<< HEAD
       "check_hash": "SELECT md5(string_agg({column}::text,'')) FROM {table} {condition};",
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+=======
+      "check_hash": "SELECT md5(string_agg({column},'' {order})) FROM {table} {condition};",
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
+>>>>>>> @{u}
     },
     "datetime": {
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "boolean": {
-      "check_true": "SELECT COUNT(NULLIF({column},False)) FROM {table} {condition};",
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_true": "SELECT COUNT(NULLIF({column},False)) FROM {table} {condition}{order};",
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order};"
     },
     "other": {
-      "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
+      "check_nn": "SELECT COUNT({column}) FROM {table} {condition} {order}"
     }
   },
   "mssql": {
@@ -85,10 +109,36 @@ COLUMN_CHECK = {
     "other": {
       "check_nn": "SELECT COUNT({column}) FROM {table} {condition};"
     }
+  },
+  "pandas": {
+    "numeric": {
+      "check_sum": "sum",
+      "check_nn": "count"
+    },
+    "text": {
+      "check_nn": "count"
+    },
+    "datetime": {
+      "check_nn": "count;"
+    },
+    "boolean": {
+      "check_true": "count",
+      "check_nn": "count"
+    },
+    "other": {
+      "check_nn": "count"
+    }
   }
 }
+<<<<<<< HEAD
 
 MODEL_QUERY = {
   "postgresql": "SELECT ordinal_position, column_name, data_type FROM information_schema.columns WHERE table_name = '{0}' {1};",
   "mssql": "SELECT ordinal_position, column_name, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{0}' {1};"
 }
+=======
+DB_COLLATION = {
+  "postgresql": {"lc_monetary":"show lc_monetary"
+                }
+  }
+>>>>>>> @{u}

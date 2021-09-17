@@ -1,0 +1,31 @@
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+
+# Backup files #
+*.bak
+
+# Visual Studio Code #
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+# SQLite #
+db.sqlite3
+
+# .env #
+.env/*
+.venv/*
+env/*
+_env/*
+.env*
+
+# ambiente pycharm #
+.idea/*
+*/.idea/*
+

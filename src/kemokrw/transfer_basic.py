@@ -89,6 +89,7 @@ class BasicTransfer(Transfer):
                                        , str(self.dst.metadata["columns"][i][j])))
                         verification = False
 
+
         self.verification = verification
         return verification
 
@@ -120,6 +121,7 @@ class BasicTransfer(Transfer):
             if n_try > 1:
                 print("Transferring data. Try {0} out of {1}".format(n_try, total_tries))
             self.dst.save_data(self.src.data)
+
             self.verify()
             n_try += 1
 

@@ -1,9 +1,15 @@
 from kemokrw.load import Load
 from sqlalchemy import create_engine
+<<<<<<< HEAD
 from sqlalchemy.exc import OperationalError, DatabaseError
 from kemokrw.func_db import get_db_metadata
 import kemokrw.config_db as config
 import pandas as pd
+=======
+from kemokrw.func_db import get_db_metadata, get_db_collation
+from kredential.kredential import discover_credId, json_to_sqlalchemy, discover_full
+
+>>>>>>> @{u}
 
 
 class LoadDB(Load):
@@ -30,8 +36,13 @@ class LoadDB(Load):
         Almacena la data de un pandas.DataFrame Object en una base de datos.
     """
 
+<<<<<<< HEAD
     def __init__(self, db, table, model, condition="", order="", chunksize=1000):
         """ Construye los atributos necesarios para almacenar la información.
+=======
+    def __init__(self, db, table, model, condition="", order="", chunksize=10000, key="", src_lc_collation="", id_passbolt=None):
+        """Construye los atributos necesarios para almacenar la información.
+>>>>>>> @{u}
 
         Parametros
         ----------
@@ -51,17 +62,35 @@ class LoadDB(Load):
                 Diccionario con el tipo (normalizado) y los chequeos realizados en cada columna para
                 determinar diferencias.
         """
+        if id_passbolt:
+            cred = discover_credId(id_passbolt)
+            db = json_to_sqlalchemy(cred)
+            self.dbms = 'postgresql'
+        else:
+            self.dbms = db.split('+')[0]
+
         self.db = create_engine(db)
-        self.dbms = db.split('+')[0]
         self.table = table
         self.model = model
         self.condition = condition
         self.order = order
         self.chunksize = chunksize
         self.metadata = None
+        self.key = key
+        self.src_lc_monetary = src_lc_collation
+        self.dst_lc_monetary = ''
 
         # Inicializa metadata
         self.get_metadata()
+        self.get_collation()
+
+
+    @classmethod
+    def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
+        """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
+        cred = discover_credId(passbolt_id)
+        return json_to_sqlalchemy(cred)
+        
 
     @classmethod
     def get_model(cls, db, model_id, condition="", order=""):
@@ -122,8 +151,16 @@ class LoadDB(Load):
         return cls(db, table, model, condition, order)
 
     def get_metadata(self):
+<<<<<<< HEAD
         """ Método que actualiza la metadata de la tabla de extracción. """
         self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition)
+=======
+        """Método que actualiza la metadata de la tabla de extracción"""
+        self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition, self.key)
+
+    def get_collation(self):
+        self.dst_lc_monetary = get_db_collation(self.db,self.dbms,'lc_monetary')
+>>>>>>> @{u}
 
     def save_data(self, data):
         """ Almacenar la información de un DataFrame.
@@ -133,6 +170,7 @@ class LoadDB(Load):
             data : pandas.DataFrame Object
                 Objeto con la información por almacenar
         """
+<<<<<<< HEAD
         column_names = dict()
         for i in self.model:
             column_names[i] = self.model[i]['name']
@@ -161,3 +199,33 @@ class LoadDB(Load):
         """ Constuye un string de conexión compatible con SQLAlquemy. """
         con_string = "postgresql+psycopg2://{0}:{1}@{2}:{3}/{4}"
         return con_string.format(login, password, host, port, schema)
+=======
+        connection = self.db.connect()
+        connection.execute("DELETE FROM {0} {1}".format(self.table, self.condition))
+        names = []
+        modeyfield = []
+        for i in self.model:
+            names.append(self.model[i]["name"])
+            if self.model[i]["type"] == "money":
+                modeyfield.append(self.model[i]["name"])
+
+        data.columns = names
+
+        for i in modeyfield:
+            data[i] = data[i].str.replace('Bs.', '', regex=False)
+            data[i] = data[i].str.replace('$', '', regex=False)
+            if self.dst_lc_monetary == 'es_VE.UTF-8' and self.src_lc_monetary == 'en_US.UTF-8':
+                data[i] = data[i].str.replace(',', '', regex=False)
+                data[i] = data[i].str.replace('.', ',', regex=False)
+
+        self.chunksize = 10000
+        trans = connection.begin()
+        try:
+            data.to_sql(name=self.table, con=connection, if_exists='append',
+                        index=False, chunksize=self.chunksize)
+
+        except Exception as e:
+            print(e)
+        trans.commit()
+        connection.close()
+>>>>>>> @{u}

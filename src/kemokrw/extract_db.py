@@ -1,9 +1,14 @@
 from kemokrw.extract import Extract
 from sqlalchemy import create_engine
+<<<<<<< HEAD
 from sqlalchemy.exc import OperationalError, DatabaseError
 from kemokrw.func_db import get_db_metadata, model_format_check
 from kemokrw.func_api import query_model_from_db
+=======
+from kemokrw.func_db import get_db_metadata, model_format_check, get_db_collation
+>>>>>>> @{u}
 import kemokrw.config_db as config
+from kredential.kredential import discover_credId, json_to_sqlalchemy, discover_full
 import pandas as pd
 
 
@@ -31,8 +36,13 @@ class ExtractDB(Extract):
         Obtiene la data de la tabla a extraer.
     """
 
+<<<<<<< HEAD
     def __init__(self, db, table, model, condition="", order=""):
         """ Construye un objeto de extracción desde base de datos.
+=======
+    def __init__(self, db, table, model, condition="", order="", key="", id_passbolt=None, config_passbolt=''):
+        """Construye los atributos necesarios para la lectura de la información.
+>>>>>>> @{u}
 
         Parametros
         ----------
@@ -54,20 +64,36 @@ class ExtractDB(Extract):
             data : pandas.DataFrame Object
                 Data extraída.
         """
+
+        if id_passbolt:
+            cred = discover_credId(id_passbolt, config_passbolt)
+            db = json_to_sqlalchemy(cred)
+            self.dbms = 'postgresql'
+        else:
+            self.dbms = db.split('+')[0]
+
         self.db = create_engine(db)
-        self.dbms = db.split('+')[0]
         self.table = table
         self.model = model
         self.condition = condition
         self.order = order
         self.metadata = dict()
+<<<<<<< HEAD
         self.data = pd.DataFrame()
+=======
+        self.data = None
+        self.key = key
+        self.src_lc_monetary = ''
+>>>>>>> @{u}
 
         # Inicializa metadata
         model_format_check(self.model)
         self.get_metadata()
+        self.get_collation()
+
 
     @classmethod
+<<<<<<< HEAD
     def get_model(cls, db, model_id, condition="", order=""):
         pass
 
@@ -128,6 +154,20 @@ class ExtractDB(Extract):
     def get_metadata(self):
         """ Método que actualiza la metadata de la tabla de extracción. """
         self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition)
+=======
+    def from_passbolt(cls, passbolt_id, table, model, condition="", order=""):
+        """Construye los atributos necesarios para la lectura de la información desde la API de passbolt."""
+        cred = discover_credId(passbolt_id)
+        return json_to_sqlalchemy(cred)
+
+    def get_collation(self):
+        self.src_lc_monetary = get_db_collation(self.db, self.dbms, 'lc_monetary')
+
+    
+    def get_metadata(self):
+        """Método que actualiza la metadata de la tabla de extracción"""
+        self.metadata = get_db_metadata(self.db, self.dbms, self.model, self.table, self.condition, self.key)
+>>>>>>> @{u}
 
     def get_data(self):
         """ Método que para extraer data. """
@@ -136,10 +176,12 @@ class ExtractDB(Extract):
         j = []
         for i in self.model:
             j.append("{0} AS {1}".format(self.model[i]["name"], i))
+
         columns = ", ".join(j)
 
         query = config.TABLE_QUERY.format(columns=columns, table=self.table,
                                           condition=self.condition, order=self.order)
+<<<<<<< HEAD
         attempts = 0
         while attempts < 3:
             try:
@@ -155,3 +197,15 @@ class ExtractDB(Extract):
                 attempts += 1
                 if attempts == 3:
                     raise err
+=======
+
+        connection = self.db.connect()
+        self.data = pd.read_sql(sql=query, con=connection)
+        pd.set_option('display.max_rows', None)
+
+        connection.close()
+
+
+
+
+>>>>>>> @{u}
