@@ -4,8 +4,6 @@ FROM ubuntu:bionic-20210723
 # Identificamos quien se encarga de la gestion de la imagen
 LABEL maintainer="felix@kemok.io"
  
-# Instalamos NGINX, que va a ser la App que vamos a dockerizar.
-
 RUN apt-get update && apt-get install -y \
         software-properties-common
     RUN add-apt-repository ppa:deadsnakes/ppa
@@ -27,6 +25,5 @@ workdir /usr/src/kemokrw
 copy . .
 RUN pip install -r requirements.txt
 
-# Para terminar, lanzamos el comando para iniciar NGINX en el contenedor
 CMD ["bash"]
 
